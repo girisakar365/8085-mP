@@ -37,6 +37,9 @@ class Simulator:
             'INX':self.__inx,
             'DCR':self.__dcr,
             'DCX':self.__dcx,
+            'RRC':self.__rrc,
+            'RAR':self.__rar,
+            
         }
 
         self.__param_rule = {
@@ -65,6 +68,8 @@ class Simulator:
             'DCX':(1,1),
             'DAD':(1,1),
             'DAA':None,
+            'RRC':(0,0),
+            'RAR':(0,0)
         }
         
     def check_param(self,inst:str,arg:str):
@@ -269,4 +274,20 @@ class Simulator:
             self.__lxi('H',self.__encode(self.__filter(self.__rp().replace('H','')) - 1)) 
         else:
             self.__registers[r] = self.__encode( self.__filter(self.__registers[r]) - 1 ) 
+            
+    def __rrc(self):
+        if self.__registers['A'] == '0H':
+            return "Empty accumulator"
+        accumulator_value = bin(self.__filter(self.__registers['A']))[2:].zfill(8)
+        self.__flags['C'] = int(accumulator_value[-1])
+        rotated_value = accumulator_value[-1] + accumulator_value[:-1]
+        self.__registers['A'] = self.__encode(rotated_value)
     
+    
+    def __rar(self):
+        if self.__registers['A'] == '0H':
+            return "Empty accumulator"
+        accumulator_value = bin(self.__filter(self.__registers['A']))[2:].zfill(8)
+        rotated_value = self.__flags['C'] + accumulator_value[:-1]
+        self.__flags['C'] = int(accumulator_value[-1])
+        self.__registers['A'] = self.__encode(rotated_value)
