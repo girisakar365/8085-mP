@@ -673,6 +673,36 @@ class Interface(Cmd):
          self.error_msg['PointerError'](arg)
         else:
             self.mP.op_code('DCR')(status)
+            
+    def do_RRC(self, arg:str):
+        """
+        Rotate the content of accumulator from right
+
+        Args: No arguments
+        
+        Example:
+            > RRC 
+            Rotate the content of register B.
+        """
+        status = self.mP.check_param('RRC',arg)
+        if status == 'SyntaxError': self.error_msg[status](arg,"RAR takes no argument")
+        else:
+            self.mP.op_code('RRC')()
+            
+    def do_RAR(self, arg:str):
+        """
+        Rotate the content of accumulator from right along with the carry flag
+
+        Args: No arguments
+        
+        Example:
+            > RAR 
+            Rotate the content of register B. Then the carry changes to LSB and MSB becomes carry shifting the content of accumulator.
+        """
+        status = self.mP.check_param('RAR',arg)
+        if status == 'SyntaxError': self.error_msg[status](arg,"RAR takes no argument")
+        else:
+            self.mP.op_code('RAR')()
 
     def do_exmin_memory(self,arg:str):
         """
