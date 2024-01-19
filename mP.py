@@ -39,6 +39,8 @@ class Simulator:
             'DCX':self.__dcx,
             'RRC':self.__rrc,
             'RAR':self.__rar,
+            'RLC':self.__rlc,
+            'RAL':self.__ral
             
         }
 
@@ -69,7 +71,9 @@ class Simulator:
             'DAD':(1,1),
             'DAA':None,
             'RRC':(0,0),
-            'RAR':(0,0)
+            'RAR':(0,0),
+            'RLC':(0,0),
+            'RAL':(0,0)
         }
         
     def check_param(self,inst:str,arg:str):
@@ -279,11 +283,22 @@ class Simulator:
         accumulator_value = bin(self.__filter(self.__registers['A']))[2:].zfill(8)
         self.__flags['C'] = int(accumulator_value[-1])
         rotated_value = accumulator_value[-1] + accumulator_value[:-1]
-        self.__registers['A'] = self.__encode(rotated_value)
-    
-    
+        self.__registers['A'] = self.__encode(int(rotated_value,2))
+        
     def __rar(self):
         accumulator_value = bin(self.__filter(self.__registers['A']))[2:].zfill(8)
-        rotated_value = self.__flags['C'] + accumulator_value[:-1]
+        rotated_value = str(self.__flags['C']) + accumulator_value[:-1]
         self.__flags['C'] = int(accumulator_value[-1])
-        self.__registers['A'] = self.__encode(rotated_value)
+        self.__registers['A'] = self.__encode(int(rotated_value,2))
+    
+    def __rlc(self):
+        accumulator_value = bin(self.__filter(self.__registers['A']))[2:].zfill(8)
+        rotated_value = accumulator_value[1:] + accumulator_value[0]
+        self.__flags['C'] = int(accumulator_value[0])
+        self.__registers['A'] = self.__encode(int(rotated_value,2))
+        
+    def __ral(self):
+        accumulator_value = bin(self.__filter(self.__registers['A']))[2:].zfill(8)
+        rotated_value = accumulator_value[1:] + str(self.__flags['C'])
+        self.__flags['C'] = int(accumulator_value[0])
+        self.__registers['A'] = self.__encode(int(rotated_value,2))
