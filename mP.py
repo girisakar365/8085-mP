@@ -276,8 +276,6 @@ class Simulator:
             self.__registers[r] = self.__encode( self.__filter(self.__registers[r]) - 1 ) 
             
     def __rrc(self):
-        if self.__registers['A'] == '0H':
-            return "Empty accumulator"
         accumulator_value = bin(self.__filter(self.__registers['A']))[2:].zfill(8)
         self.__flags['C'] = int(accumulator_value[-1])
         rotated_value = accumulator_value[-1] + accumulator_value[:-1]
@@ -285,8 +283,6 @@ class Simulator:
     
     
     def __rar(self):
-        if self.__registers['A'] == '0H':
-            return "Empty accumulator"
         accumulator_value = bin(self.__filter(self.__registers['A']))[2:].zfill(8)
         rotated_value = self.__flags['C'] + accumulator_value[:-1]
         self.__flags['C'] = int(accumulator_value[-1])
