@@ -287,3 +287,5 @@ class Simulator:
         rotated_value = self.__flags['C'] + accumulator_value[:-1]
         self.__flags['C'] = int(accumulator_value[-1])
         self.__registers['A'] = self.__encode(rotated_value)
+        
+        
