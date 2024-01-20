@@ -40,7 +40,10 @@ class Simulator:
             'RRC':self.__rrc,
             'RAR':self.__rar,
             'RLC':self.__rlc,
-            'RAL':self.__ral
+            'RAL':self.__ral,
+            'ANI':self.__ani,
+            'XRI':self.__xri,
+            'ORI':self.__ori
             
         }
 
@@ -73,7 +76,10 @@ class Simulator:
             'RRC':(0,0),
             'RAR':(0,0),
             'RLC':(0,0),
-            'RAL':(0,0)
+            'RAL':(0,0),
+            'ANI':(1,3),
+            'XRI':(1,3),
+            'ORI':(1,3)
         }
         
     def check_param(self,inst:str,arg:str):
@@ -302,3 +308,17 @@ class Simulator:
         rotated_value = accumulator_value[1:] + str(self.__flags['C'])
         self.__flags['C'] = int(accumulator_value[0])
         self.__registers['A'] = self.__encode(int(rotated_value,2))
+        
+    def __ani(self,data:str):
+        self.__registers['A'] = self.__encode(self.__filter(self.__registers['A']) & self.__filter(data)) 
+        self.__flags['C'] , self.__flags['AC'] = 0, 1
+        
+    def __xri(self,data:str):
+        self.__registers['A'] = self.__encode(self.__filter(self.__registers['A']) ^ self.__filter(data))
+        self.__flags['C'] , self.__flags['AC'] = 0, 0
+        
+    def __ori(self,data:str):
+        self.__registers['A'] = self.__encode(self.__filter(self.__registers['A']) | self.__filter(data))
+        self.__flags['C'] , self.__flags['AC'] = 0, 0
+
+           
