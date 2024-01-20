@@ -168,7 +168,7 @@ class Simulator:
 
     def __mov(self,rd:str,rs:str):
         if rd == 'M':
-            self.__memory_address[self.__rp()] =  rs
+            self.__memory_address[self.__rp()] =  self.__registers[rs]
         elif rs == 'M':
             self.__registers[rd] = self.__memory_address[self.__rp()]
         else:
