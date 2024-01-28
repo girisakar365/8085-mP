@@ -43,7 +43,11 @@ class Simulator:
             'RAL':self.__ral,
             'ANI':self.__ani,
             'XRI':self.__xri,
-            'ORI':self.__ori
+            'ORI':self.__ori,
+            'ANA':self.__ana,
+            'ORA':self.__ora,
+            'XRA':self.__xra,
+            'CMA':self.__cma
             
         }
 
@@ -79,7 +83,11 @@ class Simulator:
             'RAL':(0,0),
             'ANI':(1,3),
             'XRI':(1,3),
-            'ORI':(1,3)
+            'ORI':(1,3),
+            'ANA':(1,1),
+            'ORA':(1,1),
+            'XRA':(1,1),
+            'CMA':(0,0)
         }
         
     def check_param(self,inst:str,arg:str):
@@ -321,4 +329,37 @@ class Simulator:
         self.__registers['A'] = self.__encode(self.__filter(self.__registers['A']) | self.__filter(data))
         self.__flags['C'] , self.__flags['AC'] = 0, 0
 
-           
+    def __ana(self, r:str):   
+        if r == 'M':
+            self.__registers['A'] = self.__encode(self.__filter(self.__registers['A']) & self.__filter(self.__memory_address[self.__rp()]))
+        else:
+            self.__registers['A'] = self.__encode(self.__filter(self.__registers['A']) & self.__filter(self.__registers[r]))
+        self.__registers['AC'] , self.__registers['C'] = 1, 0
+        
+    def __ora(self, r:str):   
+        if r == 'M':
+            self.__registers['A'] = self.__encode(self.__filter(self.__registers['A']) | self.__filter(self.__memory_address[self.__rp()]))
+        else:
+            self.__registers['A'] = self.__encode(self.__filter(self.__registers['A']) | self.__filter(self.__registers[r]))
+        self.__registers['AC'] , self.__registers['C'] = 0, 0  
+        
+    def __xra(self, r:str):   
+        if r == 'M':
+            self.__registers['A'] = self.__encode(self.__filter(self.__registers['A']) ^ self.__filter(self.__memory_address[self.__rp()]))
+        else:
+            self.__registers['A'] = self.__encode(self.__filter(self.__registers['A']) ^ self.__filter(self.__registers[r]))
+        self.__registers['AC'] , self.__registers['C'] = 0, 0         
+        
+    def __cma(self):
+        self.__registers['A'] = self.__encode(~self.__filter(self.__registers['A']) & 0xFF)
+    
+    def __cpa(self, data:str):
+        a_value = self.__filter(self.__registers['A'])
+        data_value = self.__filter(data)
+        if a_value < data_value:
+            self.__flags['C'], self.__flags['Z'] = 1, 0
+        elif a_value == data_value:
+            self.__flags['C'], self.__flags['Z'] = 0, 1
+        else:
+            self.__flags['C'], self.__flags['Z'] = 0, 0
+            
