@@ -47,7 +47,8 @@ class Simulator:
             'ANA':self.__ana,
             'ORA':self.__ora,
             'XRA':self.__xra,
-            'CMA':self.__cma
+            'CMA':self.__cma,
+            'CPI':self.__cpi
             
         }
 
@@ -87,7 +88,8 @@ class Simulator:
             'ANA':(1,1),
             'ORA':(1,1),
             'XRA':(1,1),
-            'CMA':(0,0)
+            'CMA':(0,0),
+            'CPI':(1,3)
         }
         
     def check_param(self,inst:str,arg:str):
@@ -353,7 +355,7 @@ class Simulator:
     def __cma(self):
         self.__registers['A'] = self.__encode(~self.__filter(self.__registers['A']) & 0xFF)
     
-    def __cpa(self, data:str):
+    def __cpi(self, data:str):
         a_value = self.__filter(self.__registers['A'])
         data_value = self.__filter(data)
         if a_value < data_value:
