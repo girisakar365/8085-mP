@@ -342,7 +342,6 @@ class Interface(Cmd):
         if status == 'SyntaxError': self.error_msg[status](arg,'ADD r/m')
         elif status == 'RegisterError': self.error_msg[status](arg,'ADD r/m')
         else:
-            print(status)
             self.mP.op_code('ADD')(status[0])
     
     def do_ADC(self, arg:str):
@@ -703,6 +702,162 @@ class Interface(Cmd):
         if status == 'SyntaxError': self.error_msg[status](arg,"RAR takes no argument")
         else:
             self.mP.op_code('RAR')()
+    
+    def do_RLC(self, arg:str):
+        """
+        Rotate the content of accumulator from right along with the carry flag
+
+        Args: No arguments
+        
+        Example:
+            > RAR 
+            Rotate the content of register B. Then the carry changes to LSB and MSB becomes carry shifting the content of accumulator.
+        """
+        status = self.mP.check_param('RLC',arg)
+        if status == 'SyntaxError': self.error_msg[status](arg,"RLC takes no argument")
+        else:
+            self.mP.op_code('RLC')()
+    
+    def do_RAL(self, arg:str):
+        """
+        Rotate the content of accumulator from right along with the carry flag
+
+        Args: No arguments
+        
+        Example:
+            > RAR 
+            Rotate the content of register B. Then the carry changes to LSB and MSB becomes carry shifting the content of accumulator.
+        """
+        status = self.mP.check_param('RAL',arg)
+        if status == 'SyntaxError': self.error_msg[status](arg,"RAL takes no argument")
+        else:
+            self.mP.op_code('RAL')()
+    
+    def do_ANI(self, arg:str):
+        """
+        Rotate the content of accumulator from right along with the carry flag
+
+        Args: No arguments
+        
+        Example:
+            > RAR 
+            Rotate the content of register B. Then the carry changes to LSB and MSB becomes carry shifting the content of accumulator.
+        """
+        status = self.mP.check_param('ANI',arg)
+        if status == 'SyntaxError': self.error_msg[status](arg,"ANI takes no argument")
+        if status == 'DataError': self.error_msg[status](arg)
+        else:
+            self.mP.op_code('ANI')(status[0])
+    
+    def do_ORI(self, arg:str):
+        """
+        Rotate the content of accumulator from right along with the carry flag
+
+        Args: No arguments
+        
+        Example:
+            > RAR 
+            Rotate the content of register B. Then the carry changes to LSB and MSB becomes carry shifting the content of accumulator.
+        """
+        status = self.mP.check_param('ORI',arg)
+        if status == 'SyntaxError': self.error_msg[status](arg,"ORI takes no argument")
+        if status == 'DataError': self.error_msg[status](arg)
+        else:
+            self.mP.op_code('ORI')(status[0])
+    
+    def do_XRI(self, arg:str):
+        """
+        Rotate the content of accumulator from right along with the carry flag
+
+        Args: No arguments
+        
+        Example:
+            > RAR 
+            Rotate the content of register B. Then the carry changes to LSB and MSB becomes carry shifting the content of accumulator.
+        """
+        status = self.mP.check_param('XRI',arg)
+        if status == 'SyntaxError': self.error_msg[status](arg,"XRI takes no argument")
+        if status == 'DataError': self.error_msg[status](arg)
+        else:
+            self.mP.op_code('XRI')(status[0])
+    
+    def do_ANA(self, arg:str):
+        """
+        Rotate the content of accumulator from right along with the carry flag
+
+        Args: No arguments
+        
+        Example:
+            > RAR 
+            Rotate the content of register B. Then the carry changes to LSB and MSB becomes carry shifting the content of accumulator.
+        """
+        status = self.mP.check_param('ANA',arg)
+        if status == 'SyntaxError': self.error_msg[status](arg,"ANA takes no argument")
+        if status == 'DataError': self.error_msg[status](arg)
+        else:
+            self.mP.op_code('ANA')(status[0])
+    
+    def do_ORA(self, arg:str):
+        """
+        Rotate the content of accumulator from right along with the carry flag
+
+        Args: No arguments
+        
+        Example:
+            > RAR 
+            Rotate the content of register B. Then the carry changes to LSB and MSB becomes carry shifting the content of accumulator.
+        """
+        status = self.mP.check_param('ORA',arg)
+        if status == 'SyntaxError': self.error_msg[status](arg,"ORA takes no argument")
+        if status == 'DataError': self.error_msg[status](arg)
+        else:
+            self.mP.op_code('ORA')(status[0])
+    
+    def do_XRA(self, arg:str):
+        """
+        Rotate the content of accumulator from right along with the carry flag
+
+        Args: No arguments
+        
+        Example:
+            > RAR 
+            Rotate the content of register B. Then the carry changes to LSB and MSB becomes carry shifting the content of accumulator.
+        """
+        status = self.mP.check_param('XRA',arg)
+        if status == 'SyntaxError': self.error_msg[status](arg,"XRA takes no argument")
+        if status == 'Register': self.error_msg[status](arg)
+        else:
+            self.mP.op_code('XRA')(status[0])
+    
+    def do_CMA(self, arg:str):
+        """
+        Rotate the content of accumulator from right along with the carry flag
+
+        Args: No arguments
+        
+        Example:
+            > CMA 
+            Rotate the content of register B. Then the carry changes to LSB and MSB becomes carry shifting the content of accumulator.
+        """
+        status = self.mP.check_param('CMA',arg)
+        if status == 'SyntaxError': self.error_msg[status](arg,"CMA takes no argument")
+        else:
+            self.mP.op_code('CMA')()
+    
+    def do_STC(self, arg:str):
+        """
+        Rotate the content of accumulator from right along with the carry flag
+
+        Args: No arguments
+        
+        Example:
+            > STC 
+            Rotate the content of register B. Then the carry changes to LSB and MSB becomes carry shifting the content of accumulator.
+        """
+        status = self.mP.check_param('STC',arg)
+        if status == 'SyntaxError': self.error_msg[status](arg,"STC takes no argument")
+        else:
+            self.mP.op_code('STC')()
 
     def do_exmin_memory(self,arg:str):
         """

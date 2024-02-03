@@ -56,7 +56,8 @@ python CLI.py
 > clear
 ```
 ### Note
-1. __As of now, not all instructions are available, and updates are constantly being made. Instructions up to arithmetic operations are supported__.
+1. __As of now, not all instructions are available (available upto logical operators), and updates are constantly being made. Instructions up to arithmetic operations are supported__.
+2. __None of the flags are effected if any such operations are performed.__
 2. Ensure that you provide valid arguments and follow the correct syntax for each instruction. For additional information on specific commands, use the help command followed by the command name. For example:
 ```bash
 > help MOV
@@ -66,12 +67,14 @@ python CLI.py
 The simulator is compatible with Windows, Linux, and macOS.
 
 - Windows: No additional considerations.
-- Linux: Ensure you have the necessary dependencies by running the command mentioned under "Prerequisites."
+- Linux: Ensure you have the necessary dependencies by running the command mentioned under [Prerequisites.](#prerequisites)
 - macOS: Similar to Linux, ensure the required dependencies are installed.
 
 ## Currently Working On:
-1. Logical Group `main`
-2. Branching Group
+1. Flag modification `main`
+1. Branching Group `main`
+2. AI integration
+2. Stack Group
 
 ## Contributing
 Feel free to contribute to the project by opening issues or submitting pull requests. Your feedback and contributions are highly appreciated. Happy coding!

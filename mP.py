@@ -48,8 +48,9 @@ class Simulator:
             'ORA':self.__ora,
             'XRA':self.__xra,
             'CMA':self.__cma,
-            'CPI':self.__cpi
-            
+            'CPI':self.__cpi,
+            'CMC':self.__cmc,
+            'STC':self.__stc
         }
 
         self.__param_rule = {
@@ -89,7 +90,9 @@ class Simulator:
             'ORA':(1,1),
             'XRA':(1,1),
             'CMA':(0,0),
-            'CPI':(1,3)
+            'CPI':(1,3),
+            'CMC':(0,0),
+            'STC':(0,0)
         }
         
     def check_param(self,inst:str,arg:str):
@@ -165,11 +168,16 @@ class Simulator:
         if len(self.__rp(rp)) != 5 and self.__rp(rp) in self.__port.keys(): return True
         else: return False
 
-    def __filter(self,arg:str):
-        return int(arg.replace('H',''),16)
+    def __filter(self,arg:str, conversion:int = 16):
+        return int(arg.replace('H',''),conversion)
 
-    def __encode(self,arg:int):
-        return hex(arg)[2:].upper() + 'H'
+    def __encode(self,arg:int | bool, flag:str = 'hex'):
+        if flag == 'bin':
+            return bin(arg)
+        elif flag == 'bool':
+            return int(arg)
+        elif flag == 'hex':
+            return hex(arg)[2:].upper() + 'H'
 
     def __rp(self,rp:str = 'H') -> str:
         if rp == 'B': return self.__registers['B'] + self.__registers['C'] + 'H'
@@ -211,15 +219,19 @@ class Simulator:
 
     def __ldax(self,rp:str):
         if rp == 'B':
-            self.__registers['A'] = self.__memory_address[self.__rp('C')]  
+            self.__registers['A'] = self.__memory_address[self.__rp('B')]
         elif rp == 'D':
             self.__registers['A'] = self.__memory_address[self.__rp('D')]
+        else:
+            self.__registers['A'] = self.__memory_address[self.__rp()]
     
     def __stax(self,rp:str):
         if rp == 'B':
-            self.__memory_address[self.__rp('C')] = self.__registers['A'] 
+            self.__memory_address[self.__rp('B')] = self.__registers['A']
         elif rp == 'D':
-                self.__memory_address[self.__rp('D')] = self.__registers['A']
+            self.__memory_address[self.__rp('D')] = self.__registers['A']
+        else:
+            self.__memory_address[self.__rp()] = self.__registers['A']
 
     def __lhld(self,ma:str):
         self.__registers['L'] = self.__memory_address[ma]
@@ -308,16 +320,16 @@ class Simulator:
         self.__registers['A'] = self.__encode(int(rotated_value,2))
     
     def __rlc(self):
-        accumulator_value = bin(self.__filter(self.__registers['A']))[2:].zfill(8)
+        accumulator_value = self.__encode(self.__filter(self.__registers['A']),'bin')[2:].zfill(8)
         rotated_value = accumulator_value[1:] + accumulator_value[0]
         self.__flags['C'] = int(accumulator_value[0])
         self.__registers['A'] = self.__encode(int(rotated_value,2))
         
     def __ral(self):
-        accumulator_value = bin(self.__filter(self.__registers['A']))[2:].zfill(8)
+        accumulator_value = self.__encode(self.__filter(self.__registers['A']),'bin')[2:].zfill(8)
         rotated_value = accumulator_value[1:] + str(self.__flags['C'])
-        self.__flags['C'] = int(accumulator_value[0])
-        self.__registers['A'] = self.__encode(int(rotated_value,2))
+        self.__flags['C'] = self.__filter(accumulator_value[0],2)
+        self.__registers['A'] = self.__encode(self.__filter(rotated_value,2))
         
     def __ani(self,data:str):
         self.__registers['A'] = self.__encode(self.__filter(self.__registers['A']) & self.__filter(data)) 
@@ -364,4 +376,9 @@ class Simulator:
             self.__flags['C'], self.__flags['Z'] = 0, 1
         else:
             self.__flags['C'], self.__flags['Z'] = 0, 0
-            
+
+    def __cmc(self):
+        self.__flags['C'] = self.__encode(not self.__flags['C'], 'bool')
+
+    def __stc(self):
+        self.__flags['C'] = 1
