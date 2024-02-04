@@ -168,6 +168,12 @@ class Simulator:
         if len(self.__rp(rp)) != 5 and self.__rp(rp) in self.__port.keys(): return True
         else: return False
 
+    def __check_flag(self,flag):
+        if flag == 'C':
+            if len(self.__registers['A']) > 3:
+                self.__flags['C'] = 1
+                self.__registers['A'] = self.__registers['A'][1:]
+            
     def __filter(self,arg:str, conversion:int = 16):
         return int(arg.replace('H',''),conversion)
 
@@ -256,15 +262,18 @@ class Simulator:
             self.__registers['A'] = self.__encode( self.__filter(self.__registers['A']) +  self.__filter(self.__memory_address[self.__rp()]) )
         else: 
             self.__registers['A'] = self.__encode( self.__filter(self.__registers['A']) +  self.__filter(self.__registers[r]) )
+        self.__check_flag('C')
 
     def __adc(self,r:str):
         if r == 'M':
             self.__registers['A'] = self.__encode( self.__filter(self.__registers['A']) +  self.__filter(self.__memory_address[self.__rp()]) + self.__flags['C'] )
         else:
             self.__registers['A'] = self.__encode( self.__filter(self.__registers['A']) + self.__filter(self.__registers[r]) + self.__flags['C'] )
+        self.__check_flag('C')
 
     def __adi(self,data:str):
         self.__registers['A'] = self.__encode(self.__filter(self.__registers['A']) +  self.__filter(data))
+        self.__check_flag('C')
     
     def __dad(self,rp:str):
         self.__memory_address[self.__rp()] = self.__encode(self.__filter(self.__memory_address[self.__rp()]) +  self.__filter(self.__memory_address[self.__rp(rp)])) 
