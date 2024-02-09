@@ -178,7 +178,20 @@ class Simulator:
             return int(arg)
         elif flag == 'hex':
             return hex(arg)[2:].upper() + 'H'
-
+    
+    def __flag_check(self, arg:str):
+        if arg == 'Z':
+            if self.__filter(self.__registers['A']) == 0:
+                self.__registers['Z'] = 1
+            else :
+                self.__registers['Z'] = 0
+        elif arg == 'P':
+            if self.__encode(self.__filter(self.__registers['A']),'bin').count('1') % 2 == 0:
+                self.__registers['P'] = 1
+            else :
+                self.__registers['P'] = 0
+            
+        
     def __rp(self,rp:str = 'H') -> str:
         if rp == 'B': return self.__registers['B'] + self.__registers['C'] + 'H'
         elif rp == 'D': return  self.__registers['D'] + self.__registers['E'] + 'H'
