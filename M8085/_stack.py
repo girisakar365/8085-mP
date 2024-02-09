@@ -63,15 +63,3 @@ class Stack:
             'SPHL': self.__sphl,
             'PCHL': self.__pchl       
         }
-    def test(self):
-        self.__register['H'] = '12H'
-        self.__register['L'] = '34H'
-        self.__register['SP'] = '2000H'
-        self.__register['PC'] = '0010H'
-        self.__memory_address['2000H'] = 'FFH'
-        self.__memory_address['2001H'] = 'EEH'
-        self.__pchl()
-        print(self.__register['H'],self.__register['L'],self.__register['SP'],self.__memory_address['2000H'],self.__memory_address['2001H'] )
-
-s1 = Stack(get_token())
-s1.test()
