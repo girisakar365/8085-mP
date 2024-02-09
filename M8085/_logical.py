@@ -1,3 +1,4 @@
+from _utils import encode,filter
 class Logical:
 
     def __init__(self, token:dict):
@@ -6,68 +7,68 @@ class Logical:
         self.__flag:dict = token['flag']
 
     def __rrc(self):
-        accumulator_value = bin(self.__filter(self.__register['A']))[2:].zfill(8)
+        accumulator_value = bin(filter(self.__register['A']))[2:].zfill(8)
         self.__flag['C'] = int(accumulator_value[-1])
         rotated_value = accumulator_value[-1] + accumulator_value[:-1]
-        self.__register['A'] = self.__encode(int(rotated_value,2))
+        self.__register['A'] = encode(int(rotated_value,2))
         
     def __rar(self):
-        accumulator_value = bin(self.__filter(self.__register['A']))[2:].zfill(8)
+        accumulator_value = bin(filter(self.__register['A']))[2:].zfill(8)
         rotated_value = str(self.__flag['C']) + accumulator_value[:-1]
         self.__flag['C'] = int(accumulator_value[-1])
-        self.__register['A'] = self.__encode(int(rotated_value,2))
+        self.__register['A'] = encode(int(rotated_value,2))
     
     def __rlc(self):
-        accumulator_value = self.__encode(self.__filter(self.__register['A']),'bin')[2:].zfill(8)
+        accumulator_value = encode(filter(self.__register['A']),'bin')[2:].zfill(8)
         rotated_value = accumulator_value[1:] + accumulator_value[0]
         self.__flag['C'] = int(accumulator_value[0])
-        self.__register['A'] = self.__encode(int(rotated_value,2))
+        self.__register['A'] = encode(int(rotated_value,2))
         
     def __ral(self):
-        accumulator_value = self.__encode(self.__filter(self.__register['A']),'bin')[2:].zfill(8)
+        accumulator_value = encode(filter(self.__register['A']),'bin')[2:].zfill(8)
         rotated_value = accumulator_value[1:] + str(self.__flag['C'])
-        self.__flag['C'] = self.__filter(accumulator_value[0],2)
-        self.__register['A'] = self.__encode(self.__filter(rotated_value,2))
+        self.__flag['C'] = filter(accumulator_value[0],2)
+        self.__register['A'] = encode(filter(rotated_value,2))
         
     def __ani(self,data:str):
-        self.__register['A'] = self.__encode(self.__filter(self.__register['A']) & self.__filter(data)) 
+        self.__register['A'] = encode(filter(self.__register['A']) & filter(data)) 
         self.__flag['C'] , self.__flag['AC'] = 0, 1
         
     def __xri(self,data:str):
-        self.__register['A'] = self.__encode(self.__filter(self.__register['A']) ^ self.__filter(data))
+        self.__register['A'] = encode(filter(self.__register['A']) ^ filter(data))
         self.__flag['C'] , self.__flag['AC'] = 0, 0
         
     def __ori(self,data:str):
-        self.__register['A'] = self.__encode(self.__filter(self.__register['A']) | self.__filter(data))
+        self.__register['A'] = encode(filter(self.__register['A']) | filter(data))
         self.__flag['C'] , self.__flag['AC'] = 0, 0
 
     def __ana(self, r:str):   
         if r == 'M':
-            self.__register['A'] = self.__encode(self.__filter(self.__register['A']) & self.__filter(self.__memory_address[self.__rp()]))
+            self.__register['A'] = encode(filter(self.__register['A']) & filter(self.__memory_address[self.__rp()]))
         else:
-            self.__register['A'] = self.__encode(self.__filter(self.__register['A']) & self.__filter(self.__register[r]))
+            self.__register['A'] = encode(filter(self.__register['A']) & filter(self.__register[r]))
         self.__register['AC'] , self.__register['C'] = 1, 0
         
     def __ora(self, r:str):   
         if r == 'M':
-            self.__register['A'] = self.__encode(self.__filter(self.__register['A']) | self.__filter(self.__memory_address[self.__rp()]))
+            self.__register['A'] = encode(filter(self.__register['A']) | filter(self.__memory_address[self.__rp()]))
         else:
-            self.__register['A'] = self.__encode(self.__filter(self.__register['A']) | self.__filter(self.__register[r]))
+            self.__register['A'] = encode(filter(self.__register['A']) | filter(self.__register[r]))
         self.__register['AC'] , self.__register['C'] = 0, 0  
         
     def __xra(self, r:str):   
         if r == 'M':
-            self.__register['A'] = self.__encode(self.__filter(self.__register['A']) ^ self.__filter(self.__memory_address[self.__rp()]))
+            self.__register['A'] = encode(filter(self.__register['A']) ^ filter(self.__memory_address[self.__rp()]))
         else:
-            self.__register['A'] = self.__encode(self.__filter(self.__register['A']) ^ self.__filter(self.__register[r]))
+            self.__register['A'] = encode(filter(self.__register['A']) ^ filter(self.__register[r]))
         self.__register['AC'] , self.__register['C'] = 0, 0         
         
     def __cma(self):
-        self.__register['A'] = self.__encode(~self.__filter(self.__register['A']) & 0xFF)
+        self.__register['A'] = encode(~filter(self.__register['A']) & 0xFF)
     
     def __cpi(self, data:str):
-        a_value = self.__filter(self.__register['A'])
-        data_value = self.__filter(data)
+        a_value = filter(self.__register['A'])
+        data_value = filter(data)
         if a_value < data_value:
             self.__flag['C'], self.__flag['Z'] = 1, 0
         elif a_value == data_value:
@@ -76,7 +77,7 @@ class Logical:
             self.__flag['C'], self.__flag['Z'] = 0, 0
     
     def __cmc(self):
-        self.__flag['C'] = self.__encode(not self.__flag['C'], 'bool')
+        self.__flag['C'] = encode(not self.__flag['C'], 'bool')
 
     def __stc(self):
         self.__flag['C'] = 1
