@@ -1,4 +1,4 @@
 *.pyc
-*.json
+API_KEY.json
 test.py
 tempCodeRunnerFile.py
