@@ -3,6 +3,7 @@ from ._data import Data
 from ._arithmetic import Arithmetic
 from ._logical import Logical
 from ._peripheral import Peripheral
+from ._stack import Stack
 #Import
 
 class Control_Unit:
@@ -13,7 +14,7 @@ class Control_Unit:
         self.__arithmetic_inst = Arithmetic(self.__token)
         self.__logical_inst = Logical(self.__token)
         self.__peripheral_inst = Peripheral(self.__token)
-        #init
+        self.__stack_inst = Stack(self.__token)
 
         self.__param_rule = {
             'MOV':(2,1,1),
@@ -54,7 +55,12 @@ class Control_Unit:
             'CMA':(0,0),
             'CPI':(1,3),
             'CMC':(0,0),
-            'STC':(0,0)
+            'STC':(0,0),
+            'POP':(1,1),
+            'PUSH':(1,1),
+            'XTHL':(0,0),
+            'SPHL':(0,0),
+            'PCHL':(0,0)
         }
     
     def __rp(self,rp:str = 'H') -> str:
@@ -138,3 +144,19 @@ class Control_Unit:
         if rp == 'M': rp = 'H'
         if len(self.__rp(rp)) != 5 and self.__rp(rp) in self.__token['port'].keys(): return True
         else: return False
+
+    def check_flag(self,flag):
+        if flag == 'Z':
+            if (self.__registers['A']) == 0:
+                self.__registers['Z'] = 1
+            else :
+                self.__registers['Z'] = 0
+        elif flag == 'P':
+            if self.__encode((self.__registers['A']),'bin').count('1') % 2 == 0:
+                self.__registers['P'] = 1
+            else :
+                self.__registers['P'] = 0
+        elif flag == 'C':
+            if len(self.__registers['A']) > 3:
+                self.__flags['C'] = 1
+                self.__registers['A'] = self.__registers['A'][1:]
