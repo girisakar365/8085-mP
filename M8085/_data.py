@@ -1,3 +1,4 @@
+from ._utils import Tool
 class Data:
 
     def __init__(self,token:dict):
@@ -7,16 +8,16 @@ class Data:
     def __mov(self,arg:list):
         rd,rs = arg
         if rd == 'M':
-            self.__memory_address[self.__rp()] =  self.__register[rs]
+            self.__memory_address[Tool.rp()] =  self.__register[rs]
         elif rs == 'M':
-            self.__register[rd] = self.__memory_address[self.__rp()]
+            self.__register[rd] = self.__memory_address[Tool.rp()]
         else:
             self.__register[rd] = self.__register[rs]
 
     def __mvi(self,arg:list):
         r,data = arg
         if r == 'M':
-            self.__memory_address[self.__rp()] =  data
+            self.__memory_address[Tool.rp()] =  data
         else:
             self.__register[r] = data
 
@@ -45,20 +46,20 @@ class Data:
     def __ldax(self,arg:list):
         rp = arg[0]
         if rp == 'B':
-            self.__register['A'] = self.__memory_address[self.__rp('B')]
+            self.__register['A'] = self.__memory_address[Tool.rp('B')]
         elif rp == 'D':
-            self.__register['A'] = self.__memory_address[self.__rp('D')]
+            self.__register['A'] = self.__memory_address[Tool.rp('D')]
         else:
-            self.__register['A'] = self.__memory_address[self.__rp()]
+            self.__register['A'] = self.__memory_address[Tool.rp()]
     
     def __stax(self,arg:list):
         rp = arg[0]
         if rp == 'B':
-            self.__memory_address[self.__rp('B')] = self.__register['A']
+            self.__memory_address[Tool.rp('B')] = self.__register['A']
         elif rp == 'D':
-            self.__memory_address[self.__rp('D')] = self.__register['A']
+            self.__memory_address[Tool.rp('D')] = self.__register['A']
         else:
-            self.__memory_address[self.__rp()] = self.__register['A']
+            self.__memory_address[Tool.rp()] = self.__register['A']
 
     def __lhld(self,arg:list):
         ma = arg[0]
