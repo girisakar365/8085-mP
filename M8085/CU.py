@@ -8,12 +8,12 @@ from ._peripheral import Peripheral
 class Control_Unit:
 
     def __init__(self):
+        self.exe_mode = 1 # 1 -> interpret, 0 -> compile 
         self.__token:dict = _utils.get_token()
         self.__data_inst = Data(self.__token)
         self.__arithmetic_inst = Arithmetic(self.__token)
         self.__logical_inst = Logical(self.__token)
         self.__peripheral_inst = Peripheral(self.__token)
-        #init
 
         self.__param_rule = {
             'MOV':(2,1,1),
@@ -56,20 +56,29 @@ class Control_Unit:
             'CMC':(0,0),
             'STC':(0,0)
         }
-    
-    def __rp(self,rp:str = 'H') -> str:
-        if rp == 'B': return self.__register['B'] + self.__register['C'] + 'H'
-        elif rp == 'D': return  self.__register['D'] + self.__register['E'] + 'H'
-        else: return self.__register['H'] + self.__register['L'] + 'H'
-        
-    def inst_set(self):
-        return {
+
+        self.__inst_set = {
             "Data":self.__data_inst.get_inst(),
             "Arithematic":self.__arithmetic_inst.get_inst(),
             "Logical":self.__logical_inst.get_inst(),
             "Peripheral":self.__peripheral_inst.get_inst()
         }
     
+    def __rp(self,rp:str = 'H') -> str:
+        if rp == 'B': return self.__token["register"]['B'] + self.__token["register"]['C'] + 'H'
+        elif rp == 'D': return  self.__token["register"]['D'] + self.__token["register"]['E'] + 'H'
+        else: return self.__token["register"]['H'] + self.__token["register"]['L'] + 'H'
+            
+    def exe(self,instType:int,inst:str,prompt:str=None):
+
+        if instType in range(0,5):
+            type:str = [_ for _ in self.__inst_set][instType]
+        
+            if self.exe_mode:
+                self.__inst_set[type][inst](prompt)
+            elif not self.exe_mode:
+                pass       
+
     def show_memory(self,ic=True):
         if ic:
             return self.__token['memory']

@@ -29,45 +29,45 @@ class Logical:
         self.__flag['C'] = self.__filter(accumulator_value[0],2)
         self.__register['A'] = self.__encode(self.__filter(rotated_value,2))
         
-    def __ani(self,data:str):
-        self.__register['A'] = self.__encode(self.__filter(self.__register['A']) & self.__filter(data)) 
-        self.__flag['C'] , self.__flag['AC'] = 0, 1
-        
-    def __xri(self,data:str):
-        self.__register['A'] = self.__encode(self.__filter(self.__register['A']) ^ self.__filter(data))
-        self.__flag['C'] , self.__flag['AC'] = 0, 0
-        
-    def __ori(self,data:str):
-        self.__register['A'] = self.__encode(self.__filter(self.__register['A']) | self.__filter(data))
-        self.__flag['C'] , self.__flag['AC'] = 0, 0
+    def __ani(self, arg: list):
+        self.__register['A'] = self.__encode(self.__filter(self.__register['A']) & self.__filter(arg[0]))
+        self.__flag['C'], self.__flag['AC'] = 0, 1
 
-    def __ana(self, r:str):   
+    def __xri(self, arg: list):
+        self.__register['A'] = self.__encode(self.__filter(self.__register['A']) ^ self.__filter(arg[0]))
+        self.__flag['C'], self.__flag['AC'] = 0, 0
+
+    def __ori(self, arg: list):
+        self.__register['A'] = self.__encode(self.__filter(self.__register['A']) | self.__filter(arg[0]))
+        self.__flag['C'], self.__flag['AC'] = 0, 0
+
+    def __ana(self, arg: list):
+        r = arg[0]
         if r == 'M':
             self.__register['A'] = self.__encode(self.__filter(self.__register['A']) & self.__filter(self.__memory_address[self.__rp()]))
         else:
             self.__register['A'] = self.__encode(self.__filter(self.__register['A']) & self.__filter(self.__register[r]))
-        self.__register['AC'] , self.__register['C'] = 1, 0
-        
-    def __ora(self, r:str):   
+        self.__register['AC'], self.__register['C'] = 1, 0
+
+    def __ora(self, arg: list):
+        r = arg[0]
         if r == 'M':
             self.__register['A'] = self.__encode(self.__filter(self.__register['A']) | self.__filter(self.__memory_address[self.__rp()]))
         else:
             self.__register['A'] = self.__encode(self.__filter(self.__register['A']) | self.__filter(self.__register[r]))
-        self.__register['AC'] , self.__register['C'] = 0, 0  
-        
-    def __xra(self, r:str):   
+        self.__register['AC'], self.__register['C'] = 0, 0
+
+    def __xra(self, arg: list):
+        r = arg[0]
         if r == 'M':
             self.__register['A'] = self.__encode(self.__filter(self.__register['A']) ^ self.__filter(self.__memory_address[self.__rp()]))
         else:
             self.__register['A'] = self.__encode(self.__filter(self.__register['A']) ^ self.__filter(self.__register[r]))
-        self.__register['AC'] , self.__register['C'] = 0, 0         
-        
-    def __cma(self):
-        self.__register['A'] = self.__encode(~self.__filter(self.__register['A']) & 0xFF)
-    
-    def __cpi(self, data:str):
+        self.__register['AC'], self.__register['C'] = 0, 0
+
+    def __cpi(self, arg: list):
         a_value = self.__filter(self.__register['A'])
-        data_value = self.__filter(data)
+        data_value = self.__filter(arg[0])
         if a_value < data_value:
             self.__flag['C'], self.__flag['Z'] = 1, 0
         elif a_value == data_value:

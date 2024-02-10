@@ -4,7 +4,8 @@ class Data:
         self.__memory_address:dict = token['memory']
         self.__register:dict = token['register']
 
-    def __mov(self,rd:str,rs:str):
+    def __mov(self,arg:list):
+        rd,rs = arg
         if rd == 'M':
             self.__memory_address[self.__rp()] =  self.__register[rs]
         elif rs == 'M':
@@ -12,13 +13,15 @@ class Data:
         else:
             self.__register[rd] = self.__register[rs]
 
-    def __mvi(self,r:str,data:str):
+    def __mvi(self,arg:list):
+        r,data = arg
         if r == 'M':
             self.__memory_address[self.__rp()] =  data
         else:
             self.__register[r] = data
 
-    def __lxi(self,rp:str,data:str):
+    def __lxi(self,arg:list):
+        rp,data = arg
         if rp == 'B':
             self.__register[rp] = data[:2]
             self.__register['C'] = data[2:-1]
@@ -31,13 +34,16 @@ class Data:
             self.__register[rp] = data[:2]
             self.__register['L'] = data[2:-1]
 
-    def __lda(self,ma:str):
+    def __lda(self,arg:list):
+        ma = arg[0]
         self.__register['A'] =  self.__memory_address[ma]
     
-    def __sta(self, ma:str):
+    def __sta(self, arg:list):
+        ma = arg[0]
         self.__memory_address[ma] = self.__register['A']    
 
-    def __ldax(self,rp:str):
+    def __ldax(self,arg:list):
+        rp = arg[0]
         if rp == 'B':
             self.__register['A'] = self.__memory_address[self.__rp('B')]
         elif rp == 'D':
@@ -45,7 +51,8 @@ class Data:
         else:
             self.__register['A'] = self.__memory_address[self.__rp()]
     
-    def __stax(self,rp:str):
+    def __stax(self,arg:list):
+        rp = arg[0]
         if rp == 'B':
             self.__memory_address[self.__rp('B')] = self.__register['A']
         elif rp == 'D':
@@ -53,11 +60,13 @@ class Data:
         else:
             self.__memory_address[self.__rp()] = self.__register['A']
 
-    def __lhld(self,ma:str):
+    def __lhld(self,arg:list):
+        ma = arg[0]
         self.__register['L'] = self.__memory_address[ma]
         self.__register['H'] = self.__memory_address[str(int(ma[:-1]) + 1) + 'H']
 
-    def __shld(self,ma:str):
+    def __shld(self,arg:list):
+        ma = arg[0]
         self.__memory_address[ma] = self.__register['L'] 
         self.__memory_address[str(int(ma[:-1]) + 1) + 'H'] = self.__register['H']
     
