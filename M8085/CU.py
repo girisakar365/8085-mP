@@ -22,11 +22,6 @@ class Control_Unit:
             "Peripheral":self.__peripheral_inst.get_inst()
         }
     
-    def __rp(self,rp:str = 'H') -> str:
-        if rp == 'B': return self.__token["register"]['B'] + self.__token["register"]['C'] + 'H'
-        elif rp == 'D': return  self.__token["register"]['D'] + self.__token["register"]['E'] + 'H'
-        else: return self.__token["register"]['H'] + self.__token["register"]['L'] + 'H'
-            
     def exe(self,instType:int,inst:str,prompt:str=None):
 
         if instType in range(0,5):
