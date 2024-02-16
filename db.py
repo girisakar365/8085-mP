@@ -13,7 +13,7 @@ class DB:
         conn.close()
     
     def insert_data(tbname: str, data: str):
-        conn = sl.connect("datbase.db")
+        conn = sl.connect("database.db")
         c = conn.cursor()
         c.execute(f"INSERT INTO {tbname} VALUES (?)", (data,))
         conn.commit()
