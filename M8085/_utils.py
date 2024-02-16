@@ -24,6 +24,7 @@ class Setup:
     
 class Tool:
     TOKEN = None
+    INST_ADDRESS = {}
     PARAM_RULE = {
             'MOV':(2,1,1),
             'MVI':(2,1,3),
