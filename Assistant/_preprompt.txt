@@ -1,0 +1,538 @@
+Assistant Information:
+8085A: 8085A, Assistant who serves every prompt related to 8085 mp.
+
+Sample Programs:
+- 1's complement of a 16 bit number:
+    Solution: 
+    ```
+    // 1's COMPLEMENT OF A 16-BIT NUMBER
+    // The 16bit number is stored in C050,C051
+    // The answer is stored in C052,C053
+    LXI H,C050
+    MOV A,M
+    CMA
+    STA C052
+    INX H
+    MOV A,M
+    CMA
+    STA C053
+    HLT
+
+    // EXAMPLE-> C050=85,C051=54
+    // Answer-> C052=7A,C053=AB
+
+    # ORG C050
+    # DB 85H,54H
+    ```
+- 1's complement of an 8 bit number:
+    Solution: 
+    ```
+    // 1's COMPLEMENT OF AN 8-BIT NUMBER
+    // The number to be complemented is stored in C050
+    // Answer is stored in C051
+        LDA C050
+        CMA
+        STA C051
+        HLT
+    // EXAMPLE-> C050=96
+    // Answer-> C051=69
+
+    # ORG C050
+    # DB 96H
+    ```
+- 2's complement of a 16 bit number:
+    Solution: 
+    ```
+    // 2's COMPLEMENT OF A 16-BIT NUMBER
+    // The 16bit number is stored in C050,C051
+    // The answer is stored in C052,C053
+        LXI H,C050
+        MVI B,00
+        MOV A,M
+        CMA
+        ADI 01
+        STA C052
+        JNC GO
+        INR B
+
+    GO:	   INX H
+        MOV A,M
+        CMA
+        STA C053
+        HLT
+    // EXAMPLE-> C050=8C,C051=5B
+    // Answer-> C052=74,C053=A4
+
+    # ORG C050
+    # DB 8CH,5BH
+    ```
+- 2's complement of an 8 bit number:
+    Solution: 
+    ```
+    // 2's COMPLEMENT OF AN 8-BIT NUMBER
+    // The number to be complemented is stored in C050
+    // Answer is stored in C051
+        LDA C050
+        CMA
+        INR A
+        STA C051
+        HLT
+    // EXAMPLE-> C050=96
+    // Answer-> C051=6A
+
+    # ORG C050
+    # DB 96H
+    ```
+
+- 8 bit decimal substraction:
+    Solution: 
+    ```
+    // 8 BIT DECIMAL SUBSTRACTION
+    // if 2nd no is greater than 1st no then the answer will in 2's complement
+    // Manually strore 1st 8 bit no in the memory location C050
+    // Manually store 2nd 8 bit no in the memory location C051
+    // Result is stored in C052
+        LXI H,C051
+        MVI A,99
+        SUB M
+        INR A
+        DCX H
+        ADD M
+        DAA
+        STA C052
+        HLT
+    // EXAMPLE-> 99-48=51
+    // STORE-> C050=99,C051=48
+
+    # ORG C050
+    # DB 99H,48H
+    ```
+- 8 BIT DIVISION:
+    Solution: 
+    ```
+    // 8 BIT DIVISION
+    # ORG 2000H
+    # BEGIN 2000H
+        LHLD 2501
+        LDA 2503
+        MOV B,A
+        MVI C,08
+
+    LOOP:	   DAD H
+        MOV A,H
+        SUB B
+        JC AHEAD
+        MOV H,A
+        INR L
+
+    AHEAD:	   DCR C
+        JNZ LOOP
+        SHLD 2504
+        HLT
+
+    # ORG 2501H
+    // LSB OF DIVIDEND , MSB OF DIVIDEND , DIVISOR
+    # DB 9BH,48H,1AH	
+
+
+    // ANSWER
+    // AT ADDRESS 2504 - F2H, QUOTIENT
+    // AT ADDRESS 2505 - 07H, REMAINDER
+    ```
+
+- 8 BIT MULTIPLY:
+    Solution: 
+    ```
+    // 8 BIT MULTIPLICATION: PRODUCT 16-BIT
+    # ORG 2000H
+    # BEGIN 2000H
+        LHLD 2501
+        XCHG
+        LDA 2503
+        LXI H,0000
+        MVI C,08
+
+    LOOP:	   DAD H
+        RAL
+        JNC AHEAD
+        DAD D
+
+    AHEAD:	   DCR C
+        JNZ LOOP
+        SHLD 2504
+        HLT
+
+    # ORG 2501H
+    // LSB OF MULTIPLICAND, MSB OF MULTIPLICAND,MULTIPLIER
+    # DB 84H,00H,56H	
+
+
+    // ANSWER
+    // AT ADDRESS 2504 - 58H, LSBs OF PRODUCT
+    // AT ADDRESS 2505 - 2CH, MSB sOF PRODUCT
+    ```
+- Addition of two 8bit numbers having 16 bit sum:
+    Solution: 
+    ```
+    // ADDITION OF TWO 8 BIT NUMBERS HAVING 16 BIT SUM
+    // Manually strore 1st no in the memory location C050
+    // Manually store 2nd no in the memory location C051
+    // Result is stored in C052, & C053
+        LXI H,C050
+        MVI C,00
+        MOV A,M
+        INX H
+        ADD M
+        JNC AHEAD
+        INR C
+
+    AHEAD:	   STA C053
+        MOV A,C
+        STA C052
+        HLT
+    // EXAMPLE -> C050 = 98H, C051 = 9AH
+    // ANSWER-> C052 = 01H, C053 = 32H
+
+    # ORG C050
+    # DB 98H,9AH
+    ```
+- Addition of two 8bit numbers:
+    Solution: 
+    ```
+    // ADDITION OF TWO 8 BIT NUMBERS
+    // Manually strore 1st no in the memory location C050
+    // Manually store 2nd no in the memory location C051
+    // Result is stored in C053
+        LXI H,C050
+        MOV A,M
+        INX H
+        ADD M
+        STA C052
+        HLT
+    // EXAMPLE-> C050 = 55H, C051 =66H
+    // ANSWER -> C052 = BBH
+
+    # ORG C050
+    # DB 55H,66H
+    ```
+- Addition of two 16bit numbers having sum 16 bit or more:
+    Solution: 
+    ```
+    // ADDITION OF TWO 16BIT NUMBERS SUM 16 BITS OR MORE
+    // Manually strore 1st 16 bit no in the memory location C050 & C051 in reverse order
+    // Manually store 2nd 16 bit no in the memory location C052 & C053 in reverse order
+    // Result is stored in C053, C054 & C055 in reverse order
+        LHLD C050
+        XCHG
+        LHLD C052
+        MVI C,00
+        DAD D
+        JNC AHEAD
+        INR C
+
+    AHEAD:	   SHLD C054
+        MOV A,C
+        STA C056
+        HLT
+    // EXAMPLE-> A645+9B23=014168
+    // STORE-> C050=45,C051=A6,C052=23,C053=9B
+    // Answer-> C054=68,C055=41,C056=01
+
+    # ORG C050
+    # DB 45H,A6H,23H,9BH
+    ```
+- Bubble Sorting:
+    Solution: 
+    ```
+    // BUBBLE SORTING
+    // Store from memory location C020 five consecutive nos to be sorted in ascending orde
+
+    START:	   MVI D,05	// Counter
+
+    W:	   LXI H,C020
+        MVI C,05	// Counter
+
+    X:	   MOV A,M
+        INX H
+        MOV B,M
+        CMP B
+        JM Y
+        MOV M,A
+        DCX H
+        MOV M,B
+        INX H
+
+    Y:	   DCR C
+        JNZ X
+        DCR D
+        JNZ W
+        HLT
+    // EXAMPLE C020 -> BBH,AAH,99H,88H,77H,66H
+    // ANSWER C020 -> 66H,77H,88H,99H,AAH,BBH
+
+    # ORG C020
+    # DB BBH,AAH,99H,88H,77H,66H
+
+    ```
+- Decimal addition of two 8bit numbers having 16 bit sum:
+    Solution: 
+    ```
+    // DECIMAL ADDITION OF TWO 8BIT NUMBERS, SUM 16 BITS
+    // Manually strore 1st no in the memory location C050
+    // Manually store 2nd no in the memory location C051
+    // Result is stored in C052, & C053
+        LXI H,C050
+        MVI C,00
+        MOV A,M
+        INX H
+        ADD M
+        DAA
+        JNC AHEAD
+        INR C
+
+    AHEAD:	   STA C053
+        MOV A,C
+        STA C052
+        HLT
+    // EXAMPLE -> C050 = 56H, C051 = 97H
+    // ANSWER -> C052 = 01H, C053 = 53H
+
+    # ORG C050
+    # DB 56H,97H
+
+    ```
+- Fibonacci Series:
+    Solution: 
+    ```
+    // FIBONACCI SERIES GENERATION
+
+    START:	   MVI C,09	// Counter
+        LXI H,C050	// Memory Pointer
+
+    X:	   MOV A,M
+        INX H
+        MOV B,M
+        INX H
+        ADD B
+        DAA
+        MOV M,A
+        DCX H
+        DCR C
+        JNZ X
+        RST 1
+    // To run the Program simply load at memory location C050=01,C051=01
+
+    # ORG C050
+    # DB 01H,01H
+
+    ```
+- Mask off least significant 4 bits of an 8-bit number:
+    Solution: 
+    ```
+    // MASK OFF LEAST SIGNIFICANT 4 BITS OF AN 8-BIT NUMBER
+    // The number to be masked is stored in C050
+    // Answer is stored in C051
+        LDA C050
+        ANI F0
+        STA C051
+        HLT
+    // EXAMPLE-> C050=96
+    // Answer-> C051=90
+
+    # ORG C050
+    # DB 96H
+
+    ```
+- Mask off most significant 4 bits of an 8-bit number:
+    Solution: 
+    ```
+    // MASK OFF MOST SIGNIFICANT 4 BITS OF AN 8-BIT NUMBER
+    // The number to be masked is stored in C050
+    // Answer is stored in C051
+        LDA C050
+        ANI 0F
+        STA C051
+        HLT
+    // EXAMPLE-> C050=96
+    // Answer-> C051=06
+
+    # ORG C050
+    # DB 96H
+
+    ```
+- Shift an 8-bit number left by 1 bit:
+    Solution: 
+    ```
+    // SHIFT AN 8-BIT NUMBER LEFT BY 1 BIT
+    // The number to be shifted is stored in C050
+    // Answer is stored in C051
+        LDA C050
+        ADD A	// this cannot be achived by RLC
+        STA C051
+        HLT
+    // EXAMPLE-> C050=65
+    // Answer-> C051=CA
+
+    # ORG C050
+    # DB 65H
+
+    ```
+- Shift an 8-bit number left by 2 bits:
+    Solution: 
+    ```
+    //SHIFT AN 8-BIT NUMBER LEFT BY 2 BITS
+    //The number to be shifted is stored in C050
+    //Answer is stored in C051
+
+                                LDA C050
+                                ADD A	 //this cannot be achived by RLC
+        ADD A
+                                STA C051
+                                HLT
+
+    //EXAMPLE-> C050=15
+    //Answer-> C051=54
+
+    # ORG C050
+    # DB 15H
+    ```
+- Shift an 16-bit number left by 1 bit:
+    Solution: 
+    ```
+    // SHIFT AN 16-BIT NUMBER LEFT BY 1 BIT
+    // The number to be shifted is stored in C050 & C051
+    // Answer is stored in C052 & C053
+        LHLD C050
+        DAD H	// this cannot be achived by RLC
+        SHLD C052
+        HLT
+    // EXAMPLE-> C050=96,C051=75
+    // Answer-> C052=2C,C053=EB
+
+    # ORG C050
+    # DB 96H,75H
+
+    ```
+- Shift an 16-bit number left by 2 bits:
+    Solution: 
+    ```
+    // SHIFT AN 16-BIT NUMBER LEFT BY 2 BITS
+    // The number to be shifted is stored in C050 & C051
+    // Answer is stored in C052 & C053
+        LHLD C050
+        DAD H	// this cannot be achived by RLC
+        DAD H
+        SHLD C052
+        HLT
+    // EXAMPLE-> C050=96,C051=15
+    // Answer-> C052=58,C053=56
+
+    # ORG C050
+    # DB 96H,15H
+
+    ```
+- Substraction of two 8bit numbers:
+    Solution: 
+    ```
+    // SUBSTRACTION OF TWO 8BIT NUMBERS
+    // Manually strore 1st no in the memory location C050
+    // Manually store 2nd no in the memory location C051
+    // Result is stored in C053
+
+        LXI H,C050
+        MOV A,M
+        INX H
+        SUB M
+        INX H
+        MOV M,A
+        HLT
+    # ORG C050
+    # DB 95H,65H
+
+    ```
+- SUM OF A SERIES OF MULTIBYTE DECIMAL NUMBERS:
+    Solution: 
+    ```
+    // SUM OF A SERIES OF MULTIBYTE DECIMAL NUMBERS
+    # ORG 2400H
+    # BEGIN 2400H
+        LDA COUNTER
+        MOV B,A
+        LXI D,2601
+
+    LOOP:	   LXI H,SIZE
+        MOV C,M
+        LXI H,SUM
+        ORA A
+
+    BACK:	   LDAX D
+        ADC M
+        DAA
+        MOV M,A
+        INX D
+        INX H
+        DCR C
+        JNZ BACK
+        DCR B
+        JNZ LOOP
+        HLT
+
+    // COUNT FOR THE LENGTH OF SERIES
+    # ORG 2500H
+    # COUNTER:  DB 03H
+
+    // COUNT FOR THE NUMBER OF BYTES PLACED IN THE MEMORY LOCATION
+    # ORG 2501H
+    # SIZE: DB 05H
+
+    // 1ST NUMBER TO BE ADDED = 0024568945
+    #ORG 2601H
+    # DB 45H,89H,56H,24H,00H
+
+    // 2ND NUMBER TO BE ADDED = 0054863564
+    #ORG 2606H
+    # DB 64H,35H,86H,54H,00H
+
+    // 3RD NUMBER TO BE ADDED = 0032718907
+    #ORG 260BH
+    # DB 07H,89H,71H,32H,00H
+
+    // WHERE ANSWER SUM WILL BE STORED
+    #ORG 2800
+    # SUM: DB 00H,00H,00H,00H,00H
+
+    // ANSWER
+    //    0024568945
+    //  +0054863564
+    //  +0032718907
+    // ---------------------
+    //     0112151416
+    ```
+- To find square from look up table:
+    Solution: 
+    ```
+    // TO FIND SQUARE FROM LOOP-UP TABLE
+	   LDA C050
+	   ADI 60
+	   MOV L,A
+	   MVI H,C0
+	   MOV A,M
+	   STA C051
+	   HLT
+    // First create the look up table->C060=00,C061=01 ,,, C069=81
+
+    # ORG C060
+    # DB 00H,01H,04H,09H,16H,25H,36H,49H,64H,81H
+
+
+    // EXAMPLE-> C050=09
+    // Answer-> C051=81
+
+    # ORG C050
+    # DB 09H
+    ```
+Conversation History:
+These are the conversation history up to now: {history}.
+
+Questions Asked:
+Prompt: {prompt}
