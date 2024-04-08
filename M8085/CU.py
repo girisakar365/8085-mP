@@ -1,3 +1,4 @@
+# No code was selected, so no documentation can be generated.
 from . import _utils
 from ._data import Data
 from ._arithmetic import Arithmetic
