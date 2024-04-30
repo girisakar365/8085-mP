@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib import gridspec
 import numpy as np
 
 class TimingDiagram:
@@ -6,7 +7,8 @@ class TimingDiagram:
         self.colors = ['#FF0000', '#0000FF', '#0000FF', '#008000', '#008000', '#FFA500', '#FF00FF', '#FF00FF', '#A52A2A', '#00FFFF']
 
     def plot_full(self, instructions):
-        decoded_timing = ['opcode', 'read', 'write']
+        decoded_timing = ['opcode', 'read']
+        # decoded_timing = ['opcode']
         # make a json file and for each instruction get the associated header(opcode fetch , read, and so on) and assign it to the decoded_timing
         # and also the height of the opcode_fetch header_columns is not properly aligned make sure you check and find some flaws on it
         plot_functions = {
@@ -16,10 +18,12 @@ class TimingDiagram:
             'io_read': self.__plot_io_read,
             'io_write': self.__plot_io_write
         }
-        fig = plt.figure(figsize=(15, 8))
+        fig = plt.figure(figsize=(15, 8)) 
+        dynamic_wratio = [6 if op =='opcode' else 4.5 for op in decoded_timing]
+        gs = gridspec.GridSpec(1, len(decoded_timing), width_ratios=dynamic_wratio)
         for i, operation in enumerate(decoded_timing):
             if operation in plot_functions:
-                plt.subplot(1, len(decoded_timing), i+1)
+                plt.subplot(gs[i])
                 plot_functions[operation]()
             else:
                 print(f"Unknown operation: {operation}")
@@ -27,7 +31,7 @@ class TimingDiagram:
         plt.show()
 
     def __plot_table(self, column_label, row_label):
-        cell_text = [['']* len(column_label) for _ in range(len(row_label))]
+        cell_text = [['']* len(column_label) for _ in range(len(row_label))] 
         table = plt.table(cellText=cell_text, colLabels=column_label, rowLabels=row_label,
                           cellLoc='center', loc='center', bbox=[0, 0, 1, 1])
         cellDict = table.get_celld()
