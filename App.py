@@ -1,7 +1,7 @@
 import streamlit as st
 from prettytable import PrettyTable
 from json import load
-from M8085 import Control_Unit, Tool, get_token, Docs
+from M8085 import Control_Unit, Tool, get_token, Docs, TimingDiagram
 from Ai import Assistant
 
 st.set_page_config(page_title="8085 Simulator",page_icon="assets/icon.png")
@@ -147,6 +147,15 @@ class App():
             table = self.cu.assemble()
             st.chat_message("assistant").write(table)
             self.history("assistant",table)
+
+        elif prompt_chunk[0].lower() == 'timing':
+            try:
+                timing_graph = TimingDiagram().plot_full(prompt_chunk[1])
+                st.chat_message("assistant").pyplot(timing_graph)
+                self.history("assistant",timing_graph)
+            except Exception:
+                st.chat_message('assistant').write('Error: TypeError: Parameter not fulfilled. Should be timing instruction (instruction name)')
+                self.history('assistant','TypeError: Parameter not fulfilled. Should be timing instruction (instruction name)')
 
         # elif prompt_chunk[0] == 'help':
             #     remove_space = ''.join(arg.split(' '))
