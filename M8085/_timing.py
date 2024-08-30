@@ -8,33 +8,31 @@ class TimingDiagram:
         self.colors = ['#FF0000', '#0000FF', '#0000FF', '#008000', '#008000', '#FFA500', '#FF00FF', '#FF00FF', '#A52A2A', '#00FFFF']
 
     def plot_full(self, instructions):
-        with open('timegraph.json', 'r') as file:
+        with open('M8085/timingstate.json', 'r') as file:
             timing_instruction = load(file)
-        decoded_timing = timing_instruction[list(instructions.split(' '))[0].upper()]
+        decoded_timing = timing_instruction[instructions.upper()]
         plot_functions = {
             'opcode': self.__plot_opcodefetch,
             'read': self.__plot_read,
             'write': self.__plot_write,
             'io_read': self.__plot_io_read,
-            'io_write': self.__plot_io_write
+            'io_write': self.__plot_io_write,
+            'time_label': self.__plot_time_label
         }
         fig = plt.figure(figsize=(15, 8)) 
         dynamic_wratio = [6 if op =='opcode' else 4.5 for op in decoded_timing]
         gs = gridspec.GridSpec(1, len(decoded_timing), width_ratios=dynamic_wratio)
+        plot_functions['time_label']()
         for i, operation in enumerate(decoded_timing):
-            if operation in plot_functions:
-                plt.subplot(gs[i])
-                plot_functions[operation]()
-            else:
-                print(f"Unknown operation: {operation}")
+            plt.subplot(gs[i])
+            plot_functions[operation]()
         plt.subplots_adjust(wspace=0, hspace=0)
-        plt.legend(instructions)
-        plt.show()
+        return fig
 
     def __plot_table(self, column_label, row_label):
         cell_text = [['']* len(column_label) for _ in range(len(row_label))] 
         table = plt.table(cellText=cell_text, colLabels=column_label, rowLabels=row_label,
-                          cellLoc='center', loc='center', bbox=[0, 0, 1, 1])
+                          cellLoc='center', loc='center',bbox=[0, 0, 1, 1])
         cellDict = table.get_celld()
         for i in range(len(row_label)):
             for j in range(len(column_label)):
@@ -59,10 +57,17 @@ class TimingDiagram:
     def __plot_opcodefetch(self):
         title = 'Opcode Fetch'
         column_label = ['T1', 'T2', 'T3', 'T4']
-        row_label = ['Clock', 'A₁₅-A₈', 'A₇-A₀', 'ALE', 'IO/M\'S₁S₀', 'RD\'', 'WR\'']
+        row_label = ['' for _ in range(8)]
         x_data, y_data = self.__get_opcodefetch_data()
         x_lim , y_lim = [0, 6], [0,8]
         self.__plot_timing_diagram(title, column_label, row_label, x_data, y_data, x_lim, y_lim)
+
+    def __plot_time_label(self):
+        column_label = ['']
+        row_label = ['Clock', 'A₁₅-A₈', 'A₇-A₀', 'ALE', 'IO/M\'S₁S₀', 'RD\'', 'WR\'']
+        x_data, y_data = [], []
+        x_lim , y_lim = [0, 1.5], [0,8]
+        self.__plot_timing_diagram("", column_label, row_label, x_data, y_data, x_lim, y_lim)
 
     def __plot_read(self):
         title = 'Read'
