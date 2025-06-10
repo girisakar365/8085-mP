@@ -1,3 +1,4 @@
+*.vscode
 *.pyc
 API_KEY.json
 test.py

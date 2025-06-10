@@ -1,37 +1,34 @@
-from ._utils import encode,decode
-
 class Branch:
     def __init__(self,token:dict):
-        self.__register:dict = token['register']
         self.__flag:dict = token['flag']
-        
-    def __jmp(self,kywrd:str):
-        self.__register['PC'] = kywrd 
-    
-    def __jc(self, kywrd:str):    
-        if self.__flag['C']: self.__register['PC'] = kywrd 
-        
-    def __jnc(self, kywrd:str):
-        if not self.__flag['C']: self.__register['PC'] = kywrd 
-    
-    def __jz(self, kywrd:str):
-        if self.__flag['Z']: self.__register['PC'] = kywrd 
-        
-    def __jnz(self, kywrd:str):
-        if not self.__flag['Z']: self.__register['PC'] = kywrd 
-    
-    def __jpe(self, kywrd:str):
-        if self.__flag['P']: self.__register['PC'] = kywrd 
-        
-    def __jpo(self, kywrd:str):
-        if not self.__flag['P']: self.__register['PC'] = kywrd 
-    
-    def __jm(self, kywrd:str):
-        if self.__flag['S']: self.__register['PC'] = kywrd 
-        
-    def __jp(self, kywrd:str):
-        if not self.__flag['S']: self.__register['PC'] = kywrd 
-    
+
+    def __jmp(self, target_label:str):
+        return target_label
+
+    def __jc(self, target_label:str):
+        return target_label if self.__flag['C'] else None
+
+    def __jnc(self, target_label:str):
+        return target_label if not self.__flag['C'] else None
+
+    def __jz(self, target_label:str):
+        return target_label if self.__flag['Z'] else None
+
+    def __jnz(self, target_label:str):
+        return target_label if not self.__flag['Z'] else None
+
+    def __jpe(self, target_label:str):
+        return target_label if self.__flag['P'] else None
+
+    def __jpo(self, target_label:str):
+        return target_label if not self.__flag['P'] else None
+
+    def __jm(self, target_label:str):
+        return target_label if self.__flag['S'] else None
+
+    def __jp(self, target_label:str):
+        return target_label if not self.__flag['S'] else None
+
     def get_inst(self):
         return {
             'JMP':self.__jmp,

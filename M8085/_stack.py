@@ -49,6 +49,9 @@ class Stack:
     def __hlt(self):
         pass
     
+    def _call(self, kyd:str):
+        return kyd
+    
     __rst55 = __hlt
 
     def get_inst(self):
@@ -59,6 +62,7 @@ class Stack:
             "SPHL": self.__sphl,
             "PCHL": self.__pchl,
             "HLT":self.__hlt,
-            "RST5.5": Stack.__rst55
+            "RST5.5": Stack.__rst55,
+            "CALL": self._call
         }
 

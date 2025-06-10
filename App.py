@@ -2,6 +2,7 @@ import streamlit as st
 from prettytable import PrettyTable
 from json import load
 from M8085 import Control_Unit, Tool, get_token, Docs, TimingDiagram
+from M8085._utils import get_dict
 from Ai import Assistant
 
 st.set_page_config(page_title="8085 Simulator",page_icon="assets/icon.png")
@@ -66,15 +67,168 @@ class App():
     def history(self,role:str,content:str):
         st.session_state["messages"].append({"role":role,"content":content})
 
+    def _execute_compiled_code_dict(self, code_blocks, warnings):
+        """Simulates execution using the get_dict block structure."""
+        if not code_blocks:
+            st.chat_message("assistant").write("Parsing resulted in no code blocks.")
+            self.history("assistant", "Parsing resulted in no code blocks.")
+            return
+
+        # Display warnings from parsing
+        if warnings:
+            st.chat_message("assistant").write("Parser Warnings/Info:")
+            self.history("assistant", ["Parser Warnings/Info:"] + warnings)
+
+        # --- Determine Start Point ---
+        current_label = "START"
+        if current_label not in code_blocks:
+            # Find the first label in the dict if START is missing
+            first_label = next(iter(code_blocks), None)
+            if first_label:
+                 current_label = first_label
+                 st.chat_message("assistant").write(f"Warning: No 'START' block found. Starting execution from first block: '{current_label}'.")
+                 self.history("assistant", f"Warning: No 'START' block found. Starting execution from first block: '{current_label}'.")
+            else: # Should be covered by empty check above, but safety
+                 st.chat_message("assistant").write("Error: No 'START' block and no other blocks found.")
+                 self.history("assistant", "Error: No 'START' block and no other blocks found.")
+                 return
+
+        current_index = 0
+        program_stack = [] # Use a Python list to simulate the address stack for CALL/RET
+        max_stack_depth = 100 # Prevent excessive recursion/stack usage
+
+        # --- Execution Loop ---
+        execution_steps = 0
+        max_steps = 10000 # Safety break
+
+        while execution_steps < max_steps:
+            execution_steps += 1
+
+            # Get current block and instruction
+            current_block = code_blocks.get(current_label)
+            if not current_block:
+                st.chat_message("assistant").write(f"Execution Error: Jumped to unknown label '{current_label}'.")
+                self.history("assistant", f"Execution Error: Jumped to unknown label '{current_label}'.")
+                break
+
+            if current_index >= len(current_block):
+                # Reached end of block without explicit jump/ret/hlt
+                # get_dict doesn't define fall-through, so this is an ambiguous end
+                st.chat_message("assistant").write(f"Execution Halted: Reached end of block '{current_label}' without HLT, RET, or JMP.")
+                self.history("assistant", f"Execution Halted: Reached end of block '{current_label}' without HLT, RET, or JMP.")
+                break
+
+            instruction_line = current_block[current_index]
+
+            # Parse instruction line (already cleaned by get_dict)
+            parts = instruction_line.split(maxsplit=1)
+            inst = parts[0].upper()
+            param_str = parts[1] if len(parts) > 1 else ""
+
+            # --- Validate parameters ---
+            validated_param = Tool.check_param(inst, param_str)
+
+            if isinstance(validated_param, str) and 'Error' in validated_param: # More robust error check
+                error_func = self.error_msg.get(validated_param.split(':')[0] if ':' in validated_param else validated_param) # Extract error type
+                if error_func:
+                    # Display error (simplified)
+                    st.chat_message("assistant").write(f"Execution Error in block '{current_label}', index {current_index} ('{instruction_line}'): {validated_param}")
+                    self.history("assistant", f"Execution Error in block '{current_label}', index {current_index} ('{instruction_line}'): {validated_param}")
+                else:
+                    st.chat_message("assistant").write(f"Execution Error in block '{current_label}', index {current_index} ('{instruction_line}'): Unknown validation error '{validated_param}'")
+                    self.history("assistant", f"Execution Error in block '{current_label}', index {current_index} ('{instruction_line}'): Unknown validation error '{validated_param}'")
+                break
+
+            # --- Execute Instruction via Control Unit ---
+            try:
+                # Execute and get flow control result
+                flow_result = self.cu.execute_instruction(inst, validated_param)
+
+                # Default: move to next instruction within the same block
+                next_label = current_label
+                next_index = current_index + 1
+
+                # Process flow control result
+                if flow_result == "HLT":
+                    st.chat_message("assistant").write(f"Execution Halted by {inst} in block '{current_label}', index {current_index}.")
+                    self.history("assistant", f"Execution Halted by {inst} in block '{current_label}', index {current_index}.")
+                    next_label = None # Signal stop
+                elif isinstance(flow_result, str): # JMP or CALL taken, flow_result is target label
+                    target_label = flow_result
+                    if inst.startswith("CALL") or inst.startswith("C"): # Handle CALL/Ccc
+                        if len(program_stack) >= max_stack_depth:
+                             st.chat_message("assistant").write(f"Execution Error: Stack overflow during {inst}!")
+                             self.history("assistant", f"Execution Error: Stack overflow during {inst}!")
+                             next_label = None # Stop
+                        else:
+                            # Push return address (LABEL and INDEX+1 of instruction AFTER call)
+                            return_point = (current_label, current_index + 1)
+                            program_stack.append(return_point)
+                            next_label = target_label
+                            next_index = 0 # Start at beginning of target block
+                    else: # Handle JMP/Jcc
+                        next_label = target_label
+                        next_index = 0 # Start at beginning of target block
+
+                    # Validate target label exists
+                    if next_label not in code_blocks:
+                        st.chat_message("assistant").write(f"Execution Error: Invalid jump/call target label '{next_label}' from instruction '{instruction_line}'.")
+                        self.history("assistant", f"Execution Error: Invalid jump/call target label '{next_label}' from instruction '{instruction_line}'.")
+                        next_label = None # Stop
+
+                elif flow_result is True: # RET or Rcc taken
+                    if not program_stack:
+                        st.chat_message("assistant").write(f"Execution Error: Stack underflow during {inst}!")
+                        self.history("assistant", f"Execution Error: Stack underflow during {inst}!")
+                        next_label = None # Stop
+                    else:
+                        return_point = program_stack.pop()
+                        next_label, next_index = return_point # Restore label and index
+
+                        # Validate popped label exists
+                        if next_label not in code_blocks:
+                           st.chat_message("assistant").write(f"Execution Error: Invalid return label '{next_label}' popped from stack.")
+                           self.history("assistant", f"Execution Error: Invalid return label '{next_label}' popped from stack.")
+                           next_label = None # Stop
+
+                # Else (flow_result is None): Conditional jump/call/ret not taken, or normal instruction.
+                # next_label and next_index are already set to continue sequentially.
+
+            except Exception as e:
+                st.chat_message("assistant").write(f"Runtime Error during execution in block '{current_label}', index {current_index} ('{instruction_line}'): {e}")
+                self.history("assistant", f"Runtime Error during execution in block '{current_label}', index {current_index} ('{instruction_line}'): {e}")
+                next_label = None # Stop on runtime error
+
+            # --- Update state for next iteration ---
+            if next_label is None: # Check for stop signal
+                break
+            current_label = next_label
+            current_index = next_index
+
+        # --- End of Loop ---
+        if execution_steps >= max_steps:
+            st.chat_message("assistant").write(f"Execution stopped: Maximum step limit ({max_steps}) reached. Potential infinite loop?")
+            self.history("assistant", f"Execution stopped: Maximum step limit ({max_steps}) reached. Potential infinite loop?")
+        elif next_label is not None: # Loop finished normally but without HLT signal
+             # This case might indicate reaching the end of the final block if it doesn't HLT/RET/JMP
+              st.chat_message("assistant").write("Execution finished.")
+              self.history("assistant", "Execution finished.")
+
+
+        # Optionally display final state
+        st.chat_message("assistant").write("Final state:")
+        self.history("assistant","Final state:")
+        self._display_state()
+
     def scrap(self,prompt:str):
         prompt_chunk = prompt.split(" ")
         inst,param = prompt_chunk[0], ''.join(prompt_chunk[1:])
 
-        if inst in ['JMP','JC','JNZ', 'JZ', 'JNC', 'JP', 'JM', 'JPE', 'JPO', 'CALL', 'CC', 'CNC', 'CZ', 'CNZ', 'CP', 'CM', 'CPE', 'CPO']:
-            st.chat_message("assistant").write("NotAllowed: Branch instructions are under construction.")
-            self.history("assistant","NotAllowed: Branch instructions are under construction.")
+        # if inst in ['JMP','JC','JNZ', 'JZ', 'JNC', 'JP', 'JM', 'JPE', 'JPO', 'CALL', 'CC', 'CNC', 'CZ', 'CNZ', 'CP', 'CM', 'CPE', 'CPO']:
+        #     st.chat_message("assistant").write("NotAllowed: Branch instructions are under construction.")
+        #     self.history("assistant","NotAllowed: Branch instructions are under construction.")
             
-        elif inst in self.cu.inst_list():
+        if inst in self.cu.inst_list():
             inst,param = prompt_chunk[0], ''.join(prompt_chunk[1:])
             status = Tool.check_param(inst,param)
             if status == 'CommaError' or status == 'TypeError':self.error_msg[status]()
@@ -156,6 +310,41 @@ class App():
             except Exception:
                 st.chat_message('assistant').write('Error: TypeError: Parameter not fulfilled. Should be timing instruction (instruction name)')
                 self.history('assistant','TypeError: Parameter not fulfilled. Should be timing instruction (instruction name)')
+        
+        elif prompt_chunk[0].lower() == 'compile':
+            assembly_code = ' '.join(prompt_chunk[1:])
+            if not assembly_code:
+                 msg = "Usage: compile <assembly code>"
+                 st.chat_message("assistant").write(msg)
+                 self.history("assistant", msg)
+                 return
+
+            msg = "Parsing code using get_dict..."
+            st.chat_message("assistant").write(msg)
+            self.history("assistant", msg)
+
+            # --- Reset State ---
+            # try:
+            #     self.cu.reset() 
+            #     msg = "(Processor state reset before execution)"
+            #     st.chat_message("assistant").write(msg)
+            #     self.history("assistant", msg)
+            # except Exception as e:
+            #      msg = f"Error during reset: {e}"
+            #      st.error(msg)
+            #      self.history("assistant", msg)
+            #      return
+
+            # --- Parse and Execute ---
+            try:
+                # Use get_dict which cleans lines and gives block structure
+                code_blocks, warnings = get_dict(assembly_code)
+                # Execute using the block-based simulation method
+                self._execute_compiled_code_dict(code_blocks, warnings)
+            except Exception as e:
+                 st.error(f"Error during compilation/execution process: {e}")
+                 self.history("assistant", f"Error during compilation/execution process: {e}")
+
 
         # elif prompt_chunk[0] == 'help':
             #     remove_space = ''.join(arg.split(' '))
