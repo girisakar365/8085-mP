@@ -1,4 +1,4 @@
-from ._utils import encode, decode, operate, INSTRUCTION
+from ._utils import *
 
 _MEMORY = {}
 _STACK = {}
@@ -15,7 +15,7 @@ class Memory:
         else:
             addr = decode(address)  # Validate address
             if isinstance(addr, int): return '00H'
-            else: return addr
+            else: return Message(f'Invalid Memory Address: {address}')
 
     def __setitem__(self,address, data):
         if data == '00H':
@@ -117,7 +117,7 @@ class Assembler:
                 label = code[1]
                 if label not in _STACK:
                     self.reset()
-                    return f'Subroutine {label} not defined'
+                    return Message(f'Subroutine {label} not defined')
                 code[1] = _STACK[label]
                 _STACK[pc] = code
 
