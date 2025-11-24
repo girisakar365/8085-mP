@@ -54,7 +54,21 @@ class Message:
             self.general += f'\nHint: {self.format}'
 
         return self.general
-
+    
+    def as_dict(self):
+        self.__str__()
+        return {
+            "error":True,
+            "message": self.msg,
+            "details":{
+                "instruction": self.inst,
+                "position": self.pos,
+                "line": self.line,
+                "tag": self.tag,
+                "hint": self.format,
+            }
+        }
+    
     def __iter__(self):
         self.__str__()
         yield from self.general
