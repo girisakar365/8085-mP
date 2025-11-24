@@ -56,9 +56,13 @@ class ExecuteRequest(BaseModel):
 
 class ExecuteErrorDetails(BaseModel):
     """Structured error details for execution runtime or parser errors."""
-    error: bool
+    type: Optional[str] = None
+    instruction: Optional[str] = None
+    tag: Optional[str] = None
+    position: Optional[int] = None
+    line: Optional[str] = None
+    hint: Optional[str] = None
     message: str
-    details:Dict[str, Optional[Any]]
 
 class ExecuteSuccessResponse(BaseModel):
     """Response model for successful execution."""

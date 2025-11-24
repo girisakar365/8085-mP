@@ -3,7 +3,7 @@ from M8085 import Processor, Message, Memory
 from M8085._memory import _MEMORY, _REGISTER, _FLAG
 from ..model import ExecuteRequest, ExecuteSuccessResponse, ExecuteErrorResponse
 
-def get_execute_program(code: str) -> dict:
+def get_execute_program(code):
     """
     Execute 8085 assembly code and return structured JSON results.
     """
