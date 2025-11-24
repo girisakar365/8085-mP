@@ -71,12 +71,6 @@
   align-items: center;
   gap: 0.75rem;
 }
-
-.shortcuts-header h2::before {
-  content: '⌨';
-  font-size: 1.5rem;
-}
-
 .shortcuts-close {
   background: transparent;
   border: none;
