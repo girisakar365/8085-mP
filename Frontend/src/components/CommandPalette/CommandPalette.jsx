@@ -17,6 +17,7 @@ import {
   useTheme,
 } from "../../stores/settingsStore";
 import { useProcessorActions } from "../../stores/processorStore";
+import api from "../../services/api";
 import "./CommandPalette.css";
 import { DESIGN_TOKENS } from "../../constants";
 
@@ -81,8 +82,14 @@ function CommandPalette({ onClearSession, onExportSession, onImportSession }) {
       id: "reset-processor",
       name: "Reset Processor State",
       icon: FileText,
-      action: () => {
-        resetProcessorState();
+      action: async () => {
+        try {
+          await api.reset();
+          resetProcessorState();
+        } catch (error) {
+          console.error('Failed to reset processor:', error);
+          resetProcessorState();
+        }
         closeCommandPalette();
       },
     },

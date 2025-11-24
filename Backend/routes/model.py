@@ -59,7 +59,7 @@ class ExecuteErrorDetails(BaseModel):
     type: Optional[str] = None
     instruction: Optional[str] = None
     tag: Optional[str] = None
-    position: Optional[int] = None
+    position: Optional[str] = None  
     line: Optional[str] = None
     hint: Optional[str] = None
     message: str

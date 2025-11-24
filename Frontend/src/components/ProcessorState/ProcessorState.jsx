@@ -1,8 +1,3 @@
-/**
- * Processor State Component (Refactored)
- * Displays 8085 processor state (registers, flags, memory) using Zustand store
- */
-
 import { useState, useEffect, useCallback, memo } from 'react';
 import { Cpu, Database, Flag } from 'lucide-react';
 import { useProcessorRegisters, useProcessorFlags, useProcessorMemory } from '../../stores/processorStore';
@@ -19,7 +14,6 @@ function ProcessorState() {
   const [prevState, setPrevState] = useState({ registers: {}, flags: {} });
 
   useEffect(() => {
-    // Track changes for highlighting
     const regChanges = new Set();
     const flagChanges = new Set();
 

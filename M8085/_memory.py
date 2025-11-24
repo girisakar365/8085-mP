@@ -101,8 +101,6 @@ class Assembler:
         
         if 'label' in line:
             label = line['label']
-            if isinstance(label, list):
-                label = ''.join(label)
             _STACK[label] = pc
 
         if 'code' in line:
