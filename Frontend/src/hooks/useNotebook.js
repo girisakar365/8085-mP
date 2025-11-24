@@ -226,7 +226,7 @@ export default function useNotebook() {
                       data: { 
                         title: 'Execution Error',
                         message: result.error.message,
-                        error: result.error.details
+                        error: result.error
                       }
                     }, 
                     executionCount: newCount, 
