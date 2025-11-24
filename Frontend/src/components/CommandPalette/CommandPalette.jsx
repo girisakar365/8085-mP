@@ -8,6 +8,8 @@ import {
   Download,
   Upload,
   Keyboard,
+  ArrowDownUp,
+  CornerDownLeft,
 } from "lucide-react";
 import {
   useSettingsActions,
@@ -17,7 +19,6 @@ import {
 import { useProcessorActions } from "../../stores/processorStore";
 import "./CommandPalette.css";
 import { DESIGN_TOKENS } from "../../constants";
-
 
 function CommandPalette({ onClearSession, onExportSession, onImportSession }) {
   const [query, setQuery] = useState("");
@@ -166,8 +167,12 @@ function CommandPalette({ onClearSession, onExportSession, onImportSession }) {
         </div>
 
         <div className="command-palette-footer">
-          <span>↑↓ Navigate</span>
-          <span>↵ Select</span>
+          <span>
+            <ArrowDownUp /> Navigate
+          </span>
+          <span>
+            <CornerDownLeft /> Select
+          </span>
           <span>Esc Close</span>
         </div>
       </div>
