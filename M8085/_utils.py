@@ -21,6 +21,8 @@ def encode(arg:int, bit:int=2) -> str:
 
     if len(addr) < bit:
         return '0' * (bit - len(addr)) + addr + 'H'
+    elif len(addr) > bit:
+        return addr[1:] + 'H'
     
     return addr + 'H'
 
