@@ -1,6 +1,6 @@
 import pyparsing as pp
 
-from ._utils import encode, decode, INSTRUCTION
+from ._utils import encode, decode, INSTRUCTION, Message
 from ._memory import Assembler
 
 IDENTIFIER = pp.Word(pp.alphas + "_", pp.alphanums + "_")  # label
