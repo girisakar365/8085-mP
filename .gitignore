@@ -3,4 +3,4 @@
 *.env
 *.log
 tempCodeRunnerFile.py
-Packages
+.venv/
