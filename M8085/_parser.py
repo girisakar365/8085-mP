@@ -12,67 +12,6 @@ map(lambda m:pp.Keyword(m), INSTRUCTION.keys())
 MEMORY_RANGE:range = range(65536)
 PORT_RANGE:range = range(256)
 
-class Message:
-    def __init__(
-        self, msg=None, inst=None, pos=None, line=None, tag=None, format=None
-        ) -> str:
-        self.msg = msg
-        self.inst = inst
-        self.pos = pos
-        self.line = line
-        self.format = format
-        self.tag = tag
-        self.general = ''
-        # self.general = f'{self.msg} for {self.inst} at {self.pos} -> {self.line}'
-
-    def __tag_map(self) -> str:
-
-        msg = {
-        'm:8': '8-bit Memory Address is reserved or out of range',
-        'm:16': '16-bit Memory Address is reserved or out of range',
-        'r': 'Invalid Register Used',
-        'rp': 'Invalid Register Pair Used',
-        'l': 'Undefined Label Reference',
-        'db': 'Invalid integer value'
-        }
-
-        self.general = f'{msg.get(self.tag)}.'
-
-    def __str__(self) -> str:
-        if self.msg:
-            self.general = f'{self.msg}.'
-        elif self.tag:
-            self.__tag_map()
-
-        if self.inst:
-            self.general += f' Instruction: {self.inst}.'
-        if self.pos:
-            self.general += f' at {self.pos}.'
-        if self.line:
-            self.general += f' -> {self.line}.'
-        if self.format:
-            self.general += f'\nHint: {self.format}'
-
-        return self.general
-    
-    def as_dict(self):
-        self.__str__()
-        return {
-            "error":True,
-            "message": self.msg,
-            "details":{
-                "instruction": self.inst,
-                "position": self.pos,
-                "line": self.line,
-                "tag": self.tag,
-                "hint": self.format,
-            }
-        }
-    
-    def __iter__(self):
-        self.__str__()
-        yield from self.general
-
 class Parser:
 
     def __init__(self,code:str):
