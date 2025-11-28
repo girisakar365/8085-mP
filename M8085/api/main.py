@@ -17,7 +17,7 @@ async def execute(request: tc.Request):
     result = Processor(request.code).as_dict()
     return result
 
-@router.get("/timing/{instruction}", response_model=tc.TimingResponse)
+@router.post("/timing/{instruction}", response_model=tc.TimingResponse)
 async def timing_diagram(instruction: str):
     """
     Get timing diagram for a specific 8085 instruction.
@@ -64,7 +64,7 @@ async def reset():
     result = Stack()['RST5.5']()
     return result
 
-@router.get("/docs/{instruction}", response_model=tc.DocumentationResponse)
+@router.post("/docs/{instruction}", response_model=tc.DocumentationResponse)
 async def docs(instruction: str):
     """
     Get documentation for a specific 8085 instruction.
