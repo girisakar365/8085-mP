@@ -85,13 +85,10 @@ class Message:
     def as_dict(self):
         self.__str__()
         return {
-            "error":True,
             "message": self.msg,
-            "details":{
-                "instruction": self.inst,
-                "position": self.pos,
-                "line": self.line,
-                "tag": self.tag,
-                "hint": self.format,
-            }
+            "instruction": self.inst,
+            "position": self.pos,
+            "line": self.line,
+            "tag": self.tag,
+            "hint": self.format,
         }
