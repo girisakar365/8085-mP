@@ -1,148 +1,175 @@
-from ._utils import encode, decode, Tool
-class Arithmetic:
+from ._base import Instruction
+from ._utils import decode, operate
+from ._memory import *
 
-    def __init__(self,token:dict):
-        Tool.TOKEN = token
-        self.__memory_address:dict = token['memory']
-        self.__register:dict = token['register']
-        self.__flag:dict = token['flag']
+class Arithmetic(Instruction):
+
+    def __init__(self):
+        self._memory:Memory = Memory()
+        self._register:Register = Register()
+        self._flag:Flag = Flag()
 
     def __add(self,r:str):
         if r == 'M':
-            self.__register['A'] = encode( decode(self.__register['A']) +  decode(self.__memory_address[Tool.rp()]) )
-        else: 
-            self.__register['A'] = encode( decode(self.__register['A']) +  decode(self.__register[r]) )
-        
-        if len(self.__register['A']) > 3:
-            self.__flag['C'] = 1
-            self.__register['A'] = self.__register['A'][1:]
-        
-        Tool.check_parity(self.__register['A']) 
-        Tool.check_zero(self.__register['A']) 
-        Tool.check_sign(self.__register['A']) 
+            op2 = self._memory[decode_rp()]
+        else:
+            op2 = self._register[r]
+
+        result = operate(self._register['A'], op2)
+        self._register['A'] = encode(decode(result) & 0xFF)
+
+        check_carry(result)
+        check_aux_carry(self._register['A'], op2)
+        check_sign(self._register['A'])
+        check_parity(self._register['A']) 
+        check_zero(self._register['A']) 
 
     def __adc(self,r:str):
         if r == 'M':
-            self.__register['A'] = encode( decode(self.__register['A']) +  decode(self.__memory_address[Tool.rp()]) + self.__flags['C'] )
+            op2 = self._memory[decode_rp()]
         else:
-            self.__register['A'] = encode( decode(self.__register['A']) + decode(self.__register[r]) + self.__flags['C'] )
+            op2 = self._register[r]
         
-        if len(self.__register['A']) > 3:
-            self.__flag['C'] = 1
-            self.__register['A'] = self.__register['A'][1:]
+        result = operate(self._register['A'], op2, flag=self._flag['C'])
+        self._register['A'] = encode(decode(result) & 0xFF)
 
-        Tool.check_parity(self.__register['A'])
-        Tool.check_zero(self.__register['A'])         
-        Tool.check_sign(self.__register['A'])         
+        check_carry(result)
+        check_aux_carry(self._register['A'], op2)
+        check_sign(self._register['A'])
+        check_parity(self._register['A']) 
+        check_zero(self._register['A'])                
         
     def __adi(self,data:str):
-        self.__register['A'] = encode(decode(self.__register['A']) +  decode(data))
+        result = operate(self._register['A'], data, flag=self._flag['C'])
+        self._register['A'] = encode(decode(result) & 0xFF)
 
-        if len(self.__register['A']) > 3:
-            self.__flag['C'] = 1
-            self.__register['A'] = self.__register['A'][1:]
-        
-        Tool.check_parity(self.__register['A'])  
-        Tool.check_zero(self.__register['A']) 
-        Tool.check_sign(self.__register['A']) 
+        check_carry(result)
+        check_aux_carry(self._register['A'], data)
+        check_sign(self._register['A'])
+        check_parity(self._register['A']) 
+        check_zero(self._register['A'])  
     
     def __dad(self,rp:str):
-        self.__memory_address[Tool.rp()] = encode(decode(self.__memory_address[Tool.rp()]) +  decode(self.__memory_address[Tool.rp(rp)]))
-
-        if len(self.__memory_address[Tool.rp()]) > 3:
-            self.__flag['C'] = 1
-            self.__memory_address[Tool.rp()] = self.__memory_address[Tool.rp()][1:]
-        
-        Tool.check_parity(self.__memory_address[Tool.rp()]) 
-        Tool.check_zero(self.__memory_address[Tool.rp()])  
-        Tool.check_sign(self.__memory_address[Tool.rp()])  
+        result = operate(self._memory[decode_rp()], self._memory[decode_rp(rp)])
+        self._memory[decode_rp()] = encode(decode(result) & 0xFFFF, bit=4)
+        check_carry(result, bit=4)
 
     def __sub(self,r:str):
 
         if r == 'M':
-            if decode(self.__memory_address[Tool.rp()]) > decode(self.__register['A']):
-                self.__flag['C'] = 1  
-            self.__register['A'] = encode( abs(decode(self.__register['A'] -  decode(self.__memory_address[Tool.rp()]))) )
+            complement = ( (~decode(self._memory[decode_rp()]) + 1) & 0xFF ) # ~B + 1 = 2's complement; & 0xFF to keep it within 8 bits 
+
         else:
-            if decode(self.__register[r]) > decode(self.__register['A']):
-                self.__flag['C'] = 1
-            self.__register['A'] = encode( abs(decode(self.__register['A']) -  decode(self.__register[r])) )
-        
-            Tool.check_parity(self.__register['A'])  
-            Tool.check_zero(self.__register['A'])  
-            Tool.check_sign(self.__register['A'])  
+            complement = ( (~decode(self._register[r]) + 1) & 0xFF ) # ~B + 1 = 2's complement; & 0xFF to keep it within 8 bits
+
+        result = operate(self._register['A'], encode(complement))
+        self._register['A'] = encode(decode(result) & 0xFF)
+
+        check_carry(result)
+        check_aux_carry(self._register['A'], encode(complement))
+        check_parity(self._register['A'])
+        check_zero(self._register['A'])
+        check_sign(self._register['A'])  
 
     def __sbb(self,r:str):
 
         if r == 'M':
-            if decode(self.__memory_address[Tool.rp()]) + self.__flags['C'] > decode(self.__register['A']):
-                self.__flag['C'] = 1
-            self.__register['A'] = encode( decode(self.__register['A']) - ( decode(self.__memory_address[Tool.rp()]) + self.__flags['C'] ) )
+            complement = ( (~decode(self._memory[decode_rp()]) + 1) & 0xFF ) # ~B + 1 = 2's complement; & 0xFF to keep it within 8 bits
         else:
-            if decode(self.__register[r]) + self.__flags['C'] > decode(self.__register['A']):
-                self.__flag['C'] = 1
-            self.__register['A'] = encode( decode(self.__register['A']) - ( decode(self.__register[r]) + self.__flags['C'] ) )
-        
-            Tool.check_parity(self.__register['A'])  
-            Tool.check_zero(self.__register['A'])  
-            Tool.check_sign(self.__register['A'])  
+            complement = ( (~decode(self._register[r]) + 1) & 0xFF ) # ~B + 1 = 2's complement; & 0xFF to keep it within 8 bits
+
+        result = operate(self._register['A'], encode(complement), flag=self._flag['C'])
+        self._register['A'] = encode(decode(result) & 0xFF)
+        check_carry(result)
+        check_aux_carry(self._register['A'], encode(complement))
+        check_parity(self._register['A'])  
+        check_zero(self._register['A'])  
+        check_sign(self._register['A'])  
 
     def __sui(self,data:str):
-        if decode(data) > decode(self.__register['A']):
-            self.__flag['C'] = 1
-        self.__register['A'] = encode(decode(self.__register['A']) -  decode(data))
-
-        Tool.check_parity(self.__register['A'])  
-        Tool.check_zero(self.__register['A'])  
-        Tool.check_sign(self.__register['A'])  
+        complement = ( (~decode(data) + 1) & 0xFF ) # ~B + 1 = 2's complement; & 0xFF to keep it within 8 bits
+        result = operate(self._register['A'], encode(complement))
+        self._register['A'] = encode(decode(result) & 0xFF)
+        
+        check_carry(result)
+        check_aux_carry(self._register['A'], encode(complement))
+        check_parity(self._register['A'])  
+        check_zero(self._register['A'])  
+        check_sign(self._register['A'])  
     
     def __sbi(self,data:str):
-        rawDat = decode(data)
-        idat = ((~rawDat + 1) & ((1 << len( bin(rawDat)[2:]) ) - 1)) #2's complement
-        if idat + self.__flags['C'] > decode(self.__register['A']):
-            self.__flag['C'] = 1
-        self.__register['A'] = encode(decode(self.__register['A']) - ( idat + self.__flags['C'] ))
+        operand = (decode(data) + self._flag['C']) & 0xFF
+        complement = ( ~(operand) + 1 ) & 0xFF  # ~B + 1 = 2's complement; & 0xFF to keep it within 8 bits
+        
+        result = operate(self._register['A'], encode(complement))
+        self._register['A'] = encode(decode(result) & 0xFF)
 
-        Tool.check_parity(self.__register['A'])
-        Tool.check_zero(self.__register['A']) 
-        Tool.check_sign(self.__register['A']) 
+        check_carry(result)
+        check_aux_carry(self._register['A'], encode(complement))
+        check_parity(self._register['A'])
+        check_zero(self._register['A']) 
+        check_sign(self._register['A']) 
 
     def __inr(self,r:str):
 
         if r == 'M':
-            new = encode(decode(Tool.rp().replace('H','')) + 1)[:-1]
-            self.__register['H']  = new[:2]
-            self.__register['L']  = new[2:]
-            Tool.check_parity(new)
-            Tool.check_zero(new)
-            Tool.check_sign(new)
-
+            result = operate(self._memory[decode_rp()], '01H') # Adding 0xFF is equivalent to subtracting 1
+            masked = encode(decode(result) & 0xFF) # 8-bit masking
+            encode_rp(masked)
+            check_aux_carry(self._memory[decode_rp()], '01H')
+        
         else:
-            self.__register[r] = encode( decode(self.__register[r]) + 1 )
-            Tool.check_parity(self.__register[r])
-            Tool.check_zero(self.__register[r])
-            Tool.check_sign(self.__register[r])
+            result = operate(self._register[r], '01H') # Adding 0xFF is equivalent to subtracting 1
+            masked = encode(decode(result) & 0xFF) # 8-bit masking
+            self._register[r] = masked
+            check_aux_carry(self._register[r], '01H')
+        
+        check_parity(masked)
+        check_zero(masked)
+        check_sign(masked)
     
     def __inx(self,rp:str):
-        self.__memory_address[Tool.rp(rp)] = encode(decode(self.__memory_address[Tool.rp(rp)]) + 1)
+        value = operate(decode_rp(rp), 1, bit=4)
+        encode_rp(value, rp=rp)
              
     def __dcx(self,rp:str):
-        self.__memory_address[Tool.rp(rp)] = encode(decode( self.__memory_address[Tool.rp(rp)] ) - 1 ) 
-    
+        value = operate(self._memory[decode_rp(rp)], 'FFFFH', bit=4)
+        encode_rp(value,rp=rp)
+
     def __dcr(self,r:str):
 
         if r == 'M':
-            new = encode(decode(Tool.rp().replace('H','')) - 1)[:-1]
-            self.__register['H']  = new[:2]
-            self.__register['L']  = new[2:]
-            Tool.check_parity(new)
-            Tool.check_zero(new)
-            Tool.check_sign(new)
+            result = operate(self._memory[decode_rp()], 'FFH') # Adding 0xFF is equivalent to subtracting 1
+            masked = encode(decode(result) & 0xFF) # 8-bit masking
+            encode_rp(masked)
+            check_aux_carry(self._memory[decode_rp()], 'FFH')
+        
         else:
-            self.__register[r] = encode( decode(self.__register[r]) - 1 )
-            Tool.check_parity(self.__register[r])
-            Tool.check_zero(self.__register[r]) 
-            Tool.check_sign(self.__register[r]) 
+            result = operate(self._register[r], 'FFH') # Adding 0xFF is equivalent to subtracting 1
+            masked = encode(decode(result) & 0xFF) # 8-bit masking
+            self._register[r] = masked
+            check_aux_carry(self._register[r], 'FFH')
+        
+        check_parity(masked)
+        check_zero(masked) 
+        check_sign(masked)
+        
+    def __daa(self):
+        num = decode(self._register['A'])
+
+        if (num & 0x0F) > 9 or self._flag['AC'] == 1:
+            num += 0x06
+            self._flag['AC'] = 1
+
+        # Upper nibble adjustment
+        if (num >> 4) > 9 or self._flag['CY'] == 1:
+            num += 0x60
+            self._flag['CY'] = 1
+        
+        self._register['A'] = encode(num & 0xFF)
+        check_sign(self._register['A'])
+        check_parity(self._register['A'])
+        check_zero(self._register['A'])
 
     def get_inst(self):
         return {
@@ -158,9 +185,9 @@ class Arithmetic:
             'INX':self.__inx,
             'DCX':self.__dcx,
             'DAD':self.__dad,
-            'DAA':None,
+            'DAA':self.__daa,
             'INR':self.__inr,
             'INX':self.__inx,
             'DCR':self.__dcr,
             'DCX':self.__dcx,
-        }
+        }    

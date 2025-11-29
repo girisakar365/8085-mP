@@ -15,6 +15,11 @@ This project provides a user-friendly app interface for simulating the 8085 micr
 
 ## Getting Started
 
+Clone the repository.
+```bash
+git clone git@github.com:girisakar365/8085-mP.git
+```
+
 ### Prerequisites
 
 Before running the simulator app, ensure that you have the required Python modules installed. You can install them using the following command:
@@ -23,6 +28,12 @@ Before running the simulator app, ensure that you have the required Python modul
 pip install streamlit prettytable
 pip install -q -U google-generativeai
 ```
+## Checklist:
+- Test cases Programs added: 54
+- Tests on Parser, Assembler.
+- Core logic implementation on subroutine and branching statements.
+- ORG and DB implementation.
+- API development
 
 ### Running the Simulator App
 1. Clone the repository:
@@ -76,4 +87,11 @@ The simulator app is compatible with Windows, Linux, and macOS.
 2. Stack Group
 
 ## Contributing
-Feel free to contribute to the project by opening issues or submitting pull requests. Your feedback and contributions are highly appreciated. Happy coding!
+- Fork the repository.
+- Create your feature branch: `git checkout -b feature/YourFeature`
+- Commit your changes: `git commit -m 'Add some YourFeature'`
+- Push to the branch: `git push origin feature/YourFeature`
+- Open a pull request.
+
+## License
+This project is licensed under  [LICENSE](LICENSE). Check the file for details.

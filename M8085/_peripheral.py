@@ -1,14 +1,17 @@
-class Peripheral:
+from ._base import Instruction
+from ._memory import Memory, Register
 
-    def __init__(self,token:dict):
-        self.__port:dict = token['port']
-        self.__register:dict = token['register']
+class Peripheral(Instruction):
+
+    def __init__(self):
+        self._port:Memory = Memory()
+        self._register:Register = Register()
 
     def __in(self, port:str):
-        self.__register['A'] = port
+        self._register['A'] = port
 
     def __out(self, port: str):
-        self.__port[port] = self.__register['A']
+        self._port[port] = self._register['A']
 
     def get_inst(self):
         return {
