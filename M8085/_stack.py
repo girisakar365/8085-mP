@@ -1,11 +1,12 @@
 from ._base import Instruction
 from ._utils import encode,decode
-from ._memory import Memory, Register, decode_rp, encode_rp
+from ._memory import Flag, Memory, Register, decode_rp, encode_rp
 
 class Stack(Instruction):
     def __init__(self):
         self._stack:Memory = Memory()
         self._register:Register = Register()
+        self._flag:Flag = Flag()
 
     def __push(self, rp:str):
         self._register['SP'] = encode(decode(self._register['SP'])-1, bit=4)
@@ -40,7 +41,21 @@ class Stack(Instruction):
     def __hlt(self):
         pass
     
-    __rst55 = __hlt
+    def __rst55(self):
+        self._stack.reset()
+        self._register.reset()
+        self._flag.reset()
+                
+        return {
+            "success": True,
+            "checkpoint": "reset",
+            "message": "Components reset to default values",
+            "defaultState": {
+                "registers": self._register.get_all(),
+                "flags": self._flag.get_all(),
+                "memory": self._stack.get_all()
+            }
+        }
 
     def get_inst(self):
         return {
@@ -52,5 +67,5 @@ class Stack(Instruction):
             "ORG": self.__org,
             "DB": self.__db,
             "HLT": self.__hlt,
-            "RST5.5": Stack.__rst55,
+            "RST5.5": self.__rst55,
         }

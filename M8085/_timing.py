@@ -235,3 +235,31 @@ class TimingDiagram:
             np.array([ 0.8, 0.8,0.8,0.1, 0.1,0.8, 0.8])
         ] 
         return x_data, y_data
+
+    def as_dict(self, instruction):
+        try:
+            normalized = instruction.upper()
+            if normalized not in INSTRUCTION:
+                return None
+            
+            fig = self.get_table(instruction)
+            import io, base64
+            img_buffer = io.BytesIO()
+            fig.savefig(img_buffer, format='png', bbox_inches='tight', pad_inches=0.05, dpi=100)
+            img_buffer.seek(0)
+
+            img_base64 = base64.b64encode(img_buffer.getvalue()).decode('utf-8')
+            plt.close(fig)
+            img_buffer.close()
+
+            return {
+                "success": True,
+                "instruction": normalized,
+                "format": "base64",
+                "diagram": f"data:image/png;base64,{img_base64}",
+            }
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e)
+            }

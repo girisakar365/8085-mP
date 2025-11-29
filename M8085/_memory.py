@@ -35,6 +35,9 @@ class Memory:
     def get_used_addresses(self):
         return _MEMORY.keys()
     
+    def get_all(self):
+        return _MEMORY
+
     def reset(self):
         _MEMORY.clear()
     
@@ -122,7 +125,46 @@ class Assembler:
                 _STACK[pc] = code
 
         self.reset_pc()
+        return 0
 
+    def assemble(self) -> list:
+        sck = []
+        label_flag = False
+        for i in _STACK:
+            if isinstance(_STACK[i], str): 
+                sck.append([_STACK[i],i])
+                label_flag = True
+            
+            elif isinstance(_STACK[i], list):
+                inst, *code = _STACK[i]
+                if inst in ['DB','ORG']: continue
+                byte = str(INSTRUCTION[inst]['byte'])
+            
+                if inst == 'MOV':
+                    param = ','.join(code)
+                    opcode = INSTRUCTION[inst][param]
+                else:
+                    try:
+                        opcode = INSTRUCTION[inst]['op']
+                    except KeyError:
+                        opcode = INSTRUCTION[inst][code[0]]
+                
+                if label_flag:
+                    sck[-1].extend( [inst,opcode,byte,'-'] )
+                    label_flag = False
+                else: sck.append( [i,'-',inst,opcode,byte,'-'] )
+                if int(byte) == 3:
+                    ldat, hdat = code[-1][2:], code[-1][:2] + 'H'
+                    sck.append( [operate(i,1,bit=4)] + ['-'] *4 + [ldat] )
+                    sck.append( [operate(i,2,bit=4)] + ['-'] *4 + [hdat] )
+                elif int(byte) == 2:
+                    sck.append( [operate(i,1,bit=4)] + ['-'] *4 + [code[-1]] )
+                
+        return sck
+    
+    def get_stack(self):
+        return _STACK
+    
     def reset(self):
         _STACK.clear()
         self.reset_pc()
@@ -133,41 +175,17 @@ class Assembler:
     
     def reset_pc(self):
         _REGISTER['PC'] = '0000H'
+    
+    def as_dict(self):
+        assembled_data = self.assemble()
+        labels = ["Address", "Label", "Instruction", "Opcode", "Cycles", "Operand"]
 
-def stack() -> list:
-    sck = []
-    label_flag = False
-    for i in _STACK:
-        if isinstance(_STACK[i], str): 
-            sck.append([_STACK[i],i])
-            label_flag = True
-        
-        elif isinstance(_STACK[i], list):
-            inst, *code = _STACK[i]
-            if inst in ['DB','ORG']: continue
-            byte = str(INSTRUCTION[inst]['byte'])
-        
-            if inst == 'MOV':
-                param = ','.join(code)
-                opcode = INSTRUCTION[inst][param]
-            else:
-                try:
-                    opcode = INSTRUCTION[inst]['op']
-                except KeyError:
-                    opcode = INSTRUCTION[inst][code[0]]
-            
-            if label_flag:
-                sck[-1].extend( [inst,opcode,byte,'-'] )
-                label_flag = False
-            else: sck.append( [i,'-',inst,opcode,byte,'-'] )
-            if int(byte) == 3:
-                ldat, hdat = code[-1][2:], code[-1][:2] + 'H'
-                sck.append( [operate(i,1,bit=4)] + ['-'] *4 + [ldat] )
-                sck.append( [operate(i,2,bit=4)] + ['-'] *4 + [hdat] )
-            elif int(byte) == 2:
-                sck.append( [operate(i,1,bit=4)] + ['-'] *4 + [code[-1]] )
-            
-    return sck
+        return {
+            "status": "success",
+            "checkpoint": 'assemble',
+            "label": labels,
+            "data": assembled_data
+        }
 
 def decode_rp(rp:str = 'H') -> str:
     if rp == 'B': return _REGISTER['B'][:-1] + _REGISTER['C']
