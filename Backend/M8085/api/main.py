@@ -3,7 +3,7 @@ import yaml
 
 from fastapi import APIRouter, HTTPException
 
-from . import type_check as tc
+from . import model as tc
 from .. import Processor, TimingDiagram, Stack
 
 router = APIRouter()
