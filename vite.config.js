@@ -24,7 +24,7 @@ export default defineConfig({
       ? {
           protocol: "ws",
           host: '127.185.243.17',
-          port: 8087,
+          port: 4918,
         }
       : undefined,
     watch: {
