@@ -132,11 +132,11 @@ export const settingsActions = {
   }),
 
   openGeminiKeyDialog: () => ({
-    type: SETTINGS_ACTIONS.OPEN_GEMINI_KEY_DIALOG,
+    type: SETTINGS_ACTIONS.OPEN_AI_KEY_DIALOG,
   }),
 
   closeGeminiKeyDialog: () => ({
-    type: SETTINGS_ACTIONS.CLOSE_GEMINI_KEY_DIALOG,
+    type: SETTINGS_ACTIONS.CLOSE_AI_KEY_DIALOG,
   }),
 
   openAboutDialog: () => ({
@@ -219,7 +219,7 @@ const useSettingsStore = create(
             set({ theme: newTheme });
             break;
 
-          case SETTINGS_ACTIONS.SET_GEMINI_API_KEY:
+          case SETTINGS_ACTIONS.SET_AI_API_KEY:
             const masked = action.payload ? `${action.payload.slice(0, 8)}...${action.payload.slice(-4)}` : null;
             set({
               geminiApiKey: action.payload,
@@ -227,7 +227,7 @@ const useSettingsStore = create(
             });
             break;
 
-          case SETTINGS_ACTIONS.CLEAR_GEMINI_API_KEY:
+          case SETTINGS_ACTIONS.CLEAR_AI_API_KEY:
             set({
               geminiApiKey: null,
               maskedGeminiKey: null
@@ -258,11 +258,11 @@ const useSettingsStore = create(
             set({ shortcutsDialogOpen: !state.shortcutsDialogOpen });
             break;
 
-          case SETTINGS_ACTIONS.OPEN_GEMINI_KEY_DIALOG:
+          case SETTINGS_ACTIONS.OPEN_AI_KEY_DIALOG:
             set({ geminiKeyDialogOpen: true });
             break;
 
-          case SETTINGS_ACTIONS.CLOSE_GEMINI_KEY_DIALOG:
+          case SETTINGS_ACTIONS.CLOSE_AI_KEY_DIALOG:
             set({ geminiKeyDialogOpen: false });
             break;
 
