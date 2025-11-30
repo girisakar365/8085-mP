@@ -1,24 +1,49 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/python
+// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
-	"name": "Python 3",
+	"name": "8085-mP Dev Container",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/python:2-3.12-bullseye",
+	"image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+	"features": {
+		"ghcr.io/devcontainers/features/python:1": {
+			"version": "3.12"
+		},
+		"ghcr.io/devcontainers/features/rust:1": {
+			"version": "1.70"
+		}
+	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	"forwardPorts": [4916, 8085, 4918],
+	"portsAttributes": {
+		"4916": {
+			"label": "Frontend (Vite)",
+			"onAutoForward": "notify"
+		},
+		"8085": {
+			"label": "Backend API",
+			"onAutoForward": "notify"
+		},
+		"4918": {
+			"label": "HMR (Hot Reload)",
+			"onAutoForward": "silent"
+		}
+	},
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "./.devcontainer/dev.sh",
+	"postCreateCommand": "chmod +x ./Scripts/dev.sh && ./Scripts/dev.sh",
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"maziac.asm-code-lens"
-			]
+			],
+			"settings": {
+				"python.defaultInterpreterPath": "${workspaceFolder}/Backend/.venv/bin/python"
+			}
 		}
 	}
 
