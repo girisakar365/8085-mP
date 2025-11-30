@@ -1,0 +1,19 @@
+<!doctype html>
+<html data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ASM STUDIO</title>
+    <!--
+      Content Security Policy: production-safe defaults.
+      - script-src 'self' prevents eval and inline scripts
+      - connect-src includes localhost dev server origins so Vite HMR can connect during development
+      Adjust as needed for production (remove localhost entries and tighten sources).
+    -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self' http://localhost:5173 ws://localhost:5173; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"> -->
+
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/renderer.jsx"></script>
+  </body>
+</html>
