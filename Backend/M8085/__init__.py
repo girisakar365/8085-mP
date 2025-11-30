@@ -104,7 +104,6 @@ class Processor:
 
     def as_dict(self) -> dict:
         result = self.execute()
-        print(self.__register.get_all())
         if isinstance(result, Message):
             return {
                 "success": False,

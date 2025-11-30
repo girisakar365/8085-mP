@@ -17,14 +17,14 @@ export default defineConfig({
 
   server: {
     //tauri config
-    port: 1420,
+    port: 4916,
     strictPort: true,
-    host: host || false,
+    host: '127.185.243.17',
     hmr: host
       ? {
           protocol: "ws",
-          host,
-          port: 1421,
+          host: '127.185.243.17',
+          port: 8087,
         }
       : undefined,
     watch: {
@@ -35,7 +35,7 @@ export default defineConfig({
     proxy: {
       // Proxy API requests to the backend server
       '/api': {
-        target: 'http://127.0.0.1:3221',
+        target: 'http://127.185.243.18:8085',
         changeOrigin: true,
         secure: false,
       },

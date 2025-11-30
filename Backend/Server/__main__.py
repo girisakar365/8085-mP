@@ -15,7 +15,7 @@ app = FastAPI(
 
 cors_origins = os.getenv(
     "CORS_ORIGINS", 
-    "http://localhost:1420,http://127.0.0.1:1420"
+    "http://127.185.243.17:4916"
 
 ).split(",")
 
@@ -65,4 +65,4 @@ async def root():
     return {"message": "Welcome to the 8085 Asm Studio Backend!"}
 
 if __name__ == "__main__":
-    uvicorn.run("Server.__main__:app", host="127.0.0.1", port=3221)
+    uvicorn.run("Server.__main__:app", host="127.185.243.18", port=8085)

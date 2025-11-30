@@ -5,7 +5,7 @@
   "identifier": "com.girisakar365.asmstudio",
   "build": {
     "beforeDevCommand": "npm run dev",
-    "devUrl": "http://localhost:1420",
+    "devUrl": "http://127.185.243.17:4916",
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist"
   },
