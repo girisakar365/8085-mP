@@ -1,3 +1,9 @@
+"""Timing diagram generator for 8085 instructions.
+
+Generates visual timing diagrams showing clock cycles, address bus,
+data bus, and control signals for each instruction.
+"""
+
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
 import numpy as np
@@ -6,6 +12,7 @@ import yaml
 from ._utils import INSTRUCTION
 
 class TimingDiagram:
+    """Generates timing diagrams as base64-encoded PNG images."""
     def __init__(self):
         self.colors = ['#FF0000', '#0000FF', '#0000FF', '#008000', '#008000', '#FFA500', '#FF00FF', '#FF00FF', '#A52A2A', '#00FFFF']
 

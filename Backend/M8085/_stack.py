@@ -1,8 +1,11 @@
+"""Stack and control instructions: PUSH, POP, XTHL, SPHL, PCHL, ORG, DB, HLT, RST."""
+
 from ._base import Instruction
 from ._utils import encode,decode
 from ._memory import Flag, Memory, Register, decode_rp, encode_rp
 
 class Stack(Instruction):
+    """Implements stack operations and assembler directives (ORG, DB)."""
     def __init__(self):
         self._stack:Memory = Memory()
         self._register:Register = Register()

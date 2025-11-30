@@ -1,3 +1,11 @@
+"""M8085 - Intel 8085 Microprocessor Simulator.
+
+Main entry point: Processor class accepts assembly code and executes it.
+
+Example:
+    result = Processor(code).as_dict()
+"""
+
 from ._parser import Parser
 from ._utils import Message, operate, INSTRUCTION
 from ._arithmetic import Arithmetic
@@ -13,6 +21,14 @@ from .logs import setup_logger, info
 RUNTIME = 10000
 setup_logger()
 class Processor:
+    """Main simulator class. Parses, assembles, and executes 8085 code.
+    
+    Execution flow:
+    1. Parse assembly code (syntax validation)
+    2. Assemble (label resolution, pass2)
+    3. Execute instructions until HLT
+    4. Return final processor state
+    """
 
     def __init__(self,input:str):
 

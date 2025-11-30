@@ -1,49 +1,132 @@
-# 8085 Microprocessor Simulator
+# ASM Studio - 8085 Microprocessor Simulator
 
-Welcome to the 8085 Microprocessor Simulator!
+[![License](https://img.shields.io/badge/License-Non--Commercial-blue.svg)](LICENSE.md)
+[![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)](https://python.org)
+[![Node.js](https://img.shields.io/badge/Node.js-22+-339933?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Rust](https://img.shields.io/badge/Rust-1.70+-000000?logo=rust&logoColor=white)](https://rust-lang.org)
 
-## Overview
+ASM Studio is an open-source simulator for the Intel 8085 microprocessor. It provides an interface to write, assemble, and execute 8085 assembly programs while observing the complete state of the processor including registers, memory, flags, and I/O ports.
 
-This project is for simulating the 8085 microprocessor. The simulator provides a convenient way to interact with an emulated 8085 microprocessor, allowing you to execute instructions and observe the state of the microprocessor, including registers, memory, flags, and more.
+## Prerequisites
 
-Main branch contains the core backend logic for the simulator. Here we update the backend and test new features before merging them into the stable CLI OR APP Branch.
+You need the following tools installed on your system:
 
-## Features
+- [Python](https://python.org/downloads) 3.12 or later
+- [Node.js](https://nodejs.org) 22 or later (includes npm)
+- [Rust](https://rustup.rs) 1.70 or later (includes Cargo)
+- [Git](https://git-scm.com)
 
-- Execute all of 8085 instructions, such as MOV, MVI, LXI, LDA, STA, ADD, SUB, INR, DCR, and many more.
-- View the contents of registers, memory, flags, ports, and other components of the 8085 microprocessor.
+## System Dependencies
 
-## Getting Started
-
-Clone the repository.
-```bash
-git clone git@github.com:girisakar365/8085-mP.git
-```
-
-### Prerequisites
-
-Before running the Packages, ensure that you have the required Python modules installed. You can install them using the following command:
+### Linux (Debian/Ubuntu)
 
 ```bash
-pip install -r requirements.txt
+sudo apt update
+sudo apt install libwebkit2gtk-4.1-dev build-essential curl wget file \
+  libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
 ```
-## Checklist:
-- Test cases Programs added: 54
-- Tests on Parser, Assembler.
-- Core logic implementation on subroutine and branching statements.
-- ORG and DB implementation.
-- API development
 
-## Working On:
-- Adding Frontend
-- Adding test cases for every features of M8085.
+### Linux (Arch)
+
+```bash
+sudo pacman -S webkit2gtk-4.1 base-devel curl wget file openssl gtk3 \
+  libappindicator-gtk3 librsvg
+```
+
+### macOS
+
+Install Xcode Command Line Tools:
+
+```bash
+xcode-select --install
+```
+
+### Windows
+
+Install [Microsoft Visual Studio C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/). When installing, select **Desktop development with C++**.
+
+## Development
+
+### Quick Setup
+
+```bash
+git clone https://github.com/girisakar365/8085-mP.git
+cd 8085-mP
+
+# Linux/macOS
+chmod +x Scripts/dev.sh
+./Scripts/dev.sh
+
+# Windows
+.\Scripts\dev.bat
+```
+
+### Manual Setup
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/girisakar365/8085-mP.git
+   cd 8085-mP
+   ```
+
+2. **Setup Backend**
+
+   ```bash
+   cd Backend
+   python3 -m venv .venv
+   source .venv/bin/activate    # Windows: .venv\Scripts\activate
+   pip install -r requirements.txt
+   cd ..
+   ```
+
+3. **Setup Frontend**
+
+   ```bash
+   npm ci
+   ```
+
+## Running
+
+```bash
+python -m Server
+npm run tauri dev
+```
+
+For web-only development (without Tauri):
+
+```bash
+npm run dev
+```
+
+### Build
+
+```bash
+npm run tauri build
+```
+
+## Dev Containers
+
+This repository includes a [Dev Container](https://containers.dev) configuration for Visual Studio Code. This provides a consistent development environment with all dependencies pre-installed.
+
+To use:
+
+1. Install the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+2. Open the repository in VS Code
+3. Click "Reopen in Container" when prompted (or run `Dev Containers: Reopen in Container` from the command palette)
+
+The container will automatically run the setup script on creation.
 
 ## Contributing
-- Fork the repository.
-- Create your feature branch: `git checkout -b feature/YourFeature`
-- Commit your changes: `git commit -m 'Add some YourFeature'`
-- Push to the branch: `git push origin feature/YourFeature`
-- Open a pull request.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this project.
+
+## Code of Conduct
+
+This project has adopted a [Code of Conduct](CODE_OF_CONDUCT.md). Please read it before participating.
 
 ## License
-This project is licensed under  [LICENSE](LICENSE). Check the file for details.
+
+This project is licensed under a Non-Commercial License. See [LICENSE.md](LICENSE.md) for details.
+
+Last Updated: November 2025

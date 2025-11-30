@@ -1,4 +1,15 @@
+"""Memory, register, flag management and assembler for the 8085 simulator.
+
+This module contains the core state management:
+- Memory: 64KB addressable memory space
+- Register: A, B, C, D, E, H, L, M, PC, SP
+- Flag: S (Sign), Z (Zero), AC (Aux Carry), P (Parity), C (Carry)
+- Assembler: Two-pass assembler for label resolution
+"""
+
 from ._utils import *
+
+# Global state - shared across all instances (singleton pattern)
 
 _MEMORY = {}
 _STACK = {}
@@ -9,6 +20,7 @@ _REGISTER = {
 _FLAG = {'S':0,'Z':0,'AC':0,'P':0,'C':0}
 
 class Memory:
+    """64KB memory space. Addresses are hex strings (e.g., '2000H')."""
 
     def __getitem__(self,address):
         if address in _MEMORY: return _MEMORY[address]
@@ -43,6 +55,7 @@ class Memory:
     
 
 class Register:
+    """8085 registers: A, B, C, D, E, H, L, M (memory ref), PC, SP."""
 
     def __getitem__(self,register):
         if register in _REGISTER: return _REGISTER[register]
@@ -70,6 +83,7 @@ class Register:
                 _REGISTER[reg] = '00H'
 
 class Flag:
+    """8085 flags: S (Sign), Z (Zero), AC (Aux Carry), P (Parity), C (Carry)."""
 
     def __getitem__(self,flag):
         if flag in _FLAG: return _FLAG[flag]
@@ -94,6 +108,11 @@ class Flag:
             _FLAG[flag] = 0
 
 class Assembler:
+    """Two-pass assembler for 8085 assembly code.
+    
+    Pass 1: Build symbol table (labels -> addresses)
+    Pass 2: Resolve label references to actual addresses
+    """
 
     def pass1(self, line:dict):
 
@@ -187,12 +206,14 @@ class Assembler:
             "data": assembled_data
         }
 
-def decode_rp(rp:str = 'H') -> str:
+def decode_rp(rp: str = 'H') -> str:
+    """Get 16-bit address from register pair (B=BC, D=DE, H=HL)."""
     if rp == 'B': return _REGISTER['B'][:-1] + _REGISTER['C']
     elif rp == 'D': return  _REGISTER['D'][:-1] + _REGISTER['E']
     else: return _REGISTER['H'][:-1] + _REGISTER['L']
 
-def encode_rp(value:str, rp:str = 'H'):
+def encode_rp(value: str, rp: str = 'H'):
+    """Store 16-bit value into register pair (B=BC, D=DE, H=HL)."""
     if rp == 'B':
         _REGISTER['B'] = value[:2] + 'H'
         _REGISTER['C'] = value[2:] 
@@ -203,7 +224,8 @@ def encode_rp(value:str, rp:str = 'H'):
         _REGISTER['H'] = value[:2] + 'H'
         _REGISTER['L'] = value[2:]
 
-def check_carry(result:str | int, bit:int=2):
+def check_carry(result: str | int, bit: int = 2):
+    """Set carry flag if result overflows (8-bit: >0xFF, 16-bit: >0xFFFF)."""
     if isinstance(result, str):
         result = decode(result)
     if bit == 4:
@@ -211,20 +233,24 @@ def check_carry(result:str | int, bit:int=2):
     elif bit == 2: 
         _FLAG['C'] = int( result > 0xFF )
 
-def check_aux_carry(op1:str | int, op2:str | int):
+def check_aux_carry(op1: str | int, op2: str | int):
+    """Set auxiliary carry flag if lower nibble sum > 0x0F."""
     if isinstance(op1, str): op1 = decode(op1)
     if isinstance(op2, str): op2 = decode(op2)
     low_nibble_sum = (op1 & 0x0F) + (op2 & 0x0F)
     _FLAG['AC'] = int( low_nibble_sum > 0x0F )
 
-def check_parity(result:str | int): 
+def check_parity(result: str | int):
+    """Set parity flag if number of 1-bits is even.""" 
     if isinstance(result, str): result = decode(result)
     _FLAG['P'] = int( bin(result).count('1') % 2 == 0 )
     
-def check_zero(result:str | int):
+def check_zero(result: str | int):
+    """Set zero flag if result is zero."""
     if isinstance(result, str): result = decode(result)
     _FLAG['Z'] = int( result == 0 )
 
-def check_sign(result:str | int):
+def check_sign(result: str | int):
+    """Set sign flag based on MSB (bit 7) of result."""
     if isinstance(result, str): result = decode(result)
     _FLAG['S'] = (result >> 7) & 1

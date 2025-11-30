@@ -1,3 +1,9 @@
+"""Assembly language parser for 8085 mnemonics.
+
+Parses assembly code into structured format, validates operands,
+and prepares instructions for the assembler.
+"""
+
 import pyparsing as pp
 
 from ._utils import encode, decode, INSTRUCTION, Message
@@ -13,6 +19,11 @@ MEMORY_RANGE:range = range(65536)
 PORT_RANGE:range = range(256)
 
 class Parser:
+    """Parses 8085 assembly source code.
+    
+    Handles labels, instructions, operands, and comments.
+    Validates operand types against instruction requirements.
+    """
 
     def __init__(self,code:str):
         # Label definition: LABEL:

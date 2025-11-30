@@ -1,8 +1,11 @@
+"""Logical instructions: ANA, ANI, ORA, ORI, XRA, XRI, CMA, CMP, CPI, RLC, RRC, RAL, RAR, CMC, STC."""
+
 from ._base import Instruction
 from ._utils import decode,encode
 from ._memory import Memory,Register,Flag, check_zero,check_parity, check_sign, decode_rp
 
 class Logical(Instruction):
+    """Implements logical, rotate, and compare operations."""
 
     def __init__(self):
         self._memory:Memory = Memory()

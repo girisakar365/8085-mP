@@ -1,8 +1,14 @@
+"""Branch instructions: JMP, Jcc, CALL, Ccc, RET, Rcc (conditional jumps/calls/returns)."""
+
 from ._base import Instruction
 from ._memory import Register, Flag
 from ._utils import operate
 
 class Branch(Instruction):
+    """Implements jump, call, and return instructions with conditional variants.
+    
+    Conditions: C (carry), Z (zero), S (sign/minus), P (parity)
+    """
     
     def __init__(self):
         self._register = Register()

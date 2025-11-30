@@ -1,3 +1,5 @@
+"""Utility functions for hex encoding/decoding and error messaging."""
+
 from pathlib import Path
 import yaml
 from .logs import setup_logger, warn
@@ -8,14 +10,24 @@ PATH = Path(__file__).parent
 with open(f"{PATH}/commands_property.yml", "r") as f:
     INSTRUCTION:dict = yaml.safe_load(f)
 
-def decode(arg:str) -> int | None:
-    arg = arg[:-1]  # Remove 'H' at the end
+def decode(arg: str) -> int | None:
+    """Convert hex string (e.g., '2000H') to integer."""
+    arg = arg[:-1]  # Remove 'H' suffix
     try:
-        return int(arg,16)
+        return int(arg, 16)
     except ValueError:
         warn(f"Invalid Address: {arg}")
 
-def encode(arg:int, bit:int=2) -> str:
+def encode(arg: int, bit: int = 2) -> str:
+    """Convert integer to hex string with specified nibble width.
+    
+    Args:
+        arg: Integer value to encode
+        bit: Number of hex digits (2 for 8-bit, 4 for 16-bit)
+    
+    Returns:
+        Hex string with 'H' suffix (e.g., '2000H')
+    """
 
     addr = hex(arg)[2:].upper()
 
@@ -27,6 +39,10 @@ def encode(arg:int, bit:int=2) -> str:
     return addr + 'H'
 
 def operate(op1: str | int, op2: str | int, flag: int = 0, bit: int = 2) -> str:
+    """Add two operands with optional carry flag.
+    
+    Handles both hex strings and integers. Used for arithmetic operations.
+    """
     if isinstance(op1, str):
         op1 = decode(op1)
     
@@ -37,6 +53,11 @@ def operate(op1: str | int, op2: str | int, flag: int = 0, bit: int = 2) -> str:
 
 
 class Message:
+    """Structured error message for parser and runtime errors.
+    
+    Provides consistent error formatting with optional instruction context,
+    line position, and syntax hints.
+    """
     def __init__(
         self, msg=None, inst=None, pos=None, line=None, tag=None, format=None
         ) -> str:

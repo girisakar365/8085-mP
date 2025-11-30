@@ -1,3 +1,5 @@
+"""Data transfer instructions: MOV, MVI, LXI, LDA, STA, LDAX, STAX, LHLD, SHLD, XCHG."""
+
 from ._base import Instruction
 from ._memory import Memory, Register, decode_rp, encode_rp
 from ._utils import encode, decode
@@ -5,6 +7,7 @@ from .logs import setup_logger, error
 
 setup_logger()
 class Data(Instruction):
+    """Implements data movement between registers, memory, and immediate values."""
 
     def __init__(self):
         self._memory:Memory = Memory()

@@ -1,7 +1,10 @@
+"""I/O instructions: IN, OUT."""
+
 from ._base import Instruction
 from ._memory import Memory, Register
 
 class Peripheral(Instruction):
+    """Implements I/O port operations (IN reads port to A, OUT writes A to port)."""
 
     def __init__(self):
         self._port:Memory = Memory()

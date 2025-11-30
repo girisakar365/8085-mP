@@ -1,8 +1,11 @@
+"""Arithmetic instructions: ADD, ADC, ADI, SUB, SBB, SUI, SBI, INR, DCR, INX, DCX, DAD, DAA."""
+
 from ._base import Instruction
 from ._utils import decode, operate
 from ._memory import *
 
 class Arithmetic(Instruction):
+    """Implements 8085 arithmetic operations. All operations update flags."""
 
     def __init__(self):
         self._memory:Memory = Memory()

@@ -1,3 +1,5 @@
+"""FastAPI server for the 8085 simulator backend."""
+
 import os, traceback
 
 from fastapi import FastAPI, Request

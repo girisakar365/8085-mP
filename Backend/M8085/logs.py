@@ -1,3 +1,5 @@
+"""Logging configuration for the 8085 simulator."""
+
 import logging
 
 LOGFILE = 'LOGS.log'

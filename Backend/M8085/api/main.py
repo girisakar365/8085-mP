@@ -1,3 +1,5 @@
+"""REST API endpoints for the 8085 simulator."""
+
 from pathlib import Path
 import yaml
 

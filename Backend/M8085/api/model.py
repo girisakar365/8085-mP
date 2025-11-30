@@ -1,3 +1,5 @@
+"""Pydantic models for API request/response validation."""
+
 from pydantic import BaseModel
 from typing import List, Any, Dict, Optional
 
