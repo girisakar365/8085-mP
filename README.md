@@ -13,7 +13,7 @@ You need the following tools installed on your system:
 
 - [Python](https://python.org/downloads) 3.12 or later
 - [Node.js](https://nodejs.org) 22 or later (includes npm)
-- [Rust](https://rustup.rs) 1.70 or later (includes Cargo)
+- [Rust](https://rustup.rs) 1.70 or later (includes Cargo) — for more info visit [rust-lang.org](https://www.rust-lang.org/tools/install)
 - [Git](https://git-scm.com)
 
 ## System Dependencies
