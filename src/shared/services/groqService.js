@@ -3,11 +3,15 @@ import { SERVICE_CONFIG, AI_PROMPTS } from '../../constants';
 
 const SYSTEM_CONTEXT = AI_PROMPTS.SYSTEM_PROMPT;
 
+// Default model - using a reliable Groq model
+const DEFAULT_MODEL = 'llama-3.1-8b-instant';
+
 class GroqService {
   constructor() {
     this.groq = null;
     this.apiKey = null;
     this.chatHistory = [];
+    this.currentModel = DEFAULT_MODEL;
   }
 
   initialize(apiKey) {
@@ -40,6 +44,14 @@ class GroqService {
     }
   }
 
+  setModel(modelId) {
+    this.currentModel = modelId || DEFAULT_MODEL;
+  }
+
+  getModel() {
+    return this.currentModel;
+  }
+
   validateKey(key) {
     return key && key.startsWith('gsk_') && key.length >= 20; // Groq API key format
   }
@@ -58,7 +70,7 @@ class GroqService {
             content: 'Just say hi only. Nothing else.'
           }
         ],
-        model: 'mixtral-8x7b-32768',
+        model: this.currentModel,
         max_tokens: 10
       });
       
@@ -68,23 +80,29 @@ class GroqService {
       
       return { valid: false, error: 'Invalid API response' };
     } catch (error) {
+      console.error('Groq API test error:', error);
       const errorMsg = error.message || error.toString() || '';
+      const statusCode = error.status || error.statusCode || '';
       
-      if (errorMsg.includes('invalid') || errorMsg.includes('401') || errorMsg.includes('unauthorized')) {
+      // Check for specific HTTP status codes first
+      if (statusCode === 401 || errorMsg.includes('401') || errorMsg.includes('Unauthorized')) {
         return { valid: false, error: 'The API key you entered is invalid. Please check and try again.' };
-      } else if (errorMsg.includes('quota') || errorMsg.includes('429')) {
+      } else if (statusCode === 403 || errorMsg.includes('403') || errorMsg.includes('Forbidden')) {
+        return { valid: false, error: 'Access forbidden. Please verify your API key has the correct permissions.' };
+      } else if (statusCode === 429 || errorMsg.includes('429') || errorMsg.includes('quota') || errorMsg.includes('rate limit')) {
         return { valid: false, error: 'Rate limit exceeded. Please try again in a few moments.' };
-      } else if (errorMsg.includes('ENOTFOUND') || errorMsg.includes('network') || errorMsg.includes('fetch') || errorMsg.includes('ECONNREFUSED') || errorMsg.includes('NetworkError') || errorMsg.includes('Failed to fetch')) {
-        return { valid: false, error: 'Unable to connect. Please check your internet connection.' };
-      } else if (errorMsg.includes('403')) {
-        return { valid: false, error: 'The API key you entered is not valid. Please verify your key.' };
-      } else if (errorMsg.includes('not found') || errorMsg.includes('404')) {
-        return { valid: false, error: 'Model not found. Please try again later.' };
-      } else if (errorMsg.includes('400') || errorMsg.includes('Bad Request')) {
+      } else if (statusCode === 404 || errorMsg.includes('404') || errorMsg.includes('not found')) {
+        return { valid: false, error: 'Model not found. Please select a different model.' };
+      } else if (statusCode === 400 || errorMsg.includes('400') || errorMsg.includes('Bad Request')) {
         return { valid: false, error: 'Invalid request. Please try again.' };
+      } else if (errorMsg.includes('ENOTFOUND') || errorMsg.includes('network') || errorMsg.includes('ECONNREFUSED') || errorMsg.includes('NetworkError') || errorMsg.includes('Failed to fetch') || errorMsg.includes('fetch')) {
+        return { valid: false, error: 'Unable to connect to Groq. Please check your internet connection.' };
+      } else if (errorMsg.toLowerCase().includes('invalid_api_key') || errorMsg.toLowerCase().includes('invalid api key')) {
+        return { valid: false, error: 'The API key you entered is invalid. Please check and try again.' };
       }
       
-      return { valid: false, error: `Validation failed: ${errorMsg.substring(0, 100)}` };
+      // For any other error, show the actual error message for debugging
+      return { valid: false, error: `Validation failed: ${errorMsg.substring(0, 150)}` };
     }
   }
 
@@ -106,7 +124,7 @@ class GroqService {
 
       const completion = await this.groq.chat.completions.create({
         messages: this.chatHistory,
-        model: 'mixtral-8x7b-32768',
+        model: this.currentModel,
         max_tokens: 4096,
         temperature: 0.7
       });

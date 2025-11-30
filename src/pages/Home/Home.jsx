@@ -12,7 +12,7 @@ import AboutDialog from "../About/AboutDialog";
 import ReportDialog from "../Report/ReportDialog";
 import {
   useSettingsActions,
-  useGeminiKeyDialogOpen,
+  useGroqKeyDialogOpen,
   useAboutDialogOpen,
   useReportDialogOpen,
 } from "../../features/settings/stores/settingsStore";
@@ -29,13 +29,13 @@ export default function Home() {
   const {
     toggleCommandPalette,
     toggleShortcutsDialog,
-    closeGeminiKeyDialog,
+    closeGroqKeyDialog,
     openAboutDialog,
     closeAboutDialog,
     openReportDialog,
     closeReportDialog,
   } = useSettingsActions();
-  const geminiKeyDialogOpen = useGeminiKeyDialogOpen();
+  const groqKeyDialogOpen = useGroqKeyDialogOpen();
   const aboutDialogOpen = useAboutDialogOpen();
   const reportDialogOpen = useReportDialogOpen();
 
@@ -267,8 +267,8 @@ export default function Home() {
       />
       <ShortcutsDialog />
       <APIKeyManager
-        isOpen={geminiKeyDialogOpen}
-        onClose={closeGeminiKeyDialog}
+        isOpen={groqKeyDialogOpen}
+        onClose={closeGroqKeyDialog}
       />
       <ConfirmDialog
         isOpen={dialogState.isOpen}

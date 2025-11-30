@@ -70,8 +70,9 @@ const initializeDesignTokens = () => {
 export const SETTINGS_ACTIONS = {
   SET_THEME: 'SET_THEME',
   TOGGLE_THEME: 'TOGGLE_THEME',
-  SET_AI_API_KEY: 'SET_AI_API_KEY',
-  CLEAR_AI_API_KEY: 'CLEAR_AI_API_KEY',
+  SET_GROQ_API_KEY: 'SET_GROQ_API_KEY',
+  CLEAR_GROQ_API_KEY: 'CLEAR_GROQ_API_KEY',
+  SET_SELECTED_MODEL: 'SET_SELECTED_MODEL',
   OPEN_COMMAND_PALETTE: 'OPEN_COMMAND_PALETTE',
   CLOSE_COMMAND_PALETTE: 'CLOSE_COMMAND_PALETTE',
   TOGGLE_COMMAND_PALETTE: 'TOGGLE_COMMAND_PALETTE',
@@ -98,13 +99,18 @@ export const settingsActions = {
     type: SETTINGS_ACTIONS.TOGGLE_THEME,
   }),
 
-  setGeminiApiKey: (key) => ({
-    type: SETTINGS_ACTIONS.SET_GEMINI_API_KEY,
+  setGroqApiKey: (key) => ({
+    type: SETTINGS_ACTIONS.SET_GROQ_API_KEY,
     payload: key,
   }),
 
-  clearGeminiApiKey: () => ({
-    type: SETTINGS_ACTIONS.CLEAR_GEMINI_API_KEY,
+  clearGroqApiKey: () => ({
+    type: SETTINGS_ACTIONS.CLEAR_GROQ_API_KEY,
+  }),
+
+  setSelectedModel: (model) => ({
+    type: SETTINGS_ACTIONS.SET_SELECTED_MODEL,
+    payload: model,
   }),
 
   openCommandPalette: () => ({
@@ -131,11 +137,11 @@ export const settingsActions = {
     type: SETTINGS_ACTIONS.TOGGLE_SHORTCUTS_DIALOG,
   }),
 
-  openGeminiKeyDialog: () => ({
+  openGroqKeyDialog: () => ({
     type: SETTINGS_ACTIONS.OPEN_AI_KEY_DIALOG,
   }),
 
-  closeGeminiKeyDialog: () => ({
+  closeGroqKeyDialog: () => ({
     type: SETTINGS_ACTIONS.CLOSE_AI_KEY_DIALOG,
   }),
 
@@ -165,15 +171,27 @@ export const settingsActions = {
   }),
 };
 
+// Available AI Models for the dropdown
+export const AI_MODELS = [
+  { id: 'llama-3.3-70b-versatile', name: 'Llama 3.3 70B Versatile', provider: 'Groq' },
+  { id: 'llama-3.1-8b-instant', name: 'Llama 3.1 8B Instant', provider: 'Groq' },
+  { id: 'llama-3.1-70b-versatile', name: 'Llama 3.1 70B Versatile', provider: 'Groq' },
+  { id: 'llama3-8b-8192', name: 'Llama 3 8B', provider: 'Groq' },
+  { id: 'llama3-70b-8192', name: 'Llama 3 70B', provider: 'Groq' },
+  { id: 'gemma2-9b-it', name: 'Gemma 2 9B', provider: 'Groq' },
+  { id: 'mixtral-8x7b-32768', name: 'Mixtral 8x7B', provider: 'Groq' },
+];
+
 const useSettingsStore = create(
   persist(
     subscribeWithSelector((set, get) => ({
       theme: THEMES.DARK,
-      geminiApiKey: null,
-      maskedGeminiKey: null,
+      groqApiKey: null,
+      maskedGroqKey: null,
+      selectedModel: 'llama-3.1-8b-instant',
       commandPaletteOpen: false,
       shortcutsDialogOpen: false,
-      geminiKeyDialogOpen: false,
+      groqKeyDialogOpen: false,
       aboutDialogOpen: false,
       reportDialogOpen: false,
       confirmDialog: {
@@ -219,19 +237,23 @@ const useSettingsStore = create(
             set({ theme: newTheme });
             break;
 
-          case SETTINGS_ACTIONS.SET_AI_API_KEY:
+          case SETTINGS_ACTIONS.SET_GROQ_API_KEY:
             const masked = action.payload ? `${action.payload.slice(0, 8)}...${action.payload.slice(-4)}` : null;
             set({
-              geminiApiKey: action.payload,
-              maskedGeminiKey: masked
+              groqApiKey: action.payload,
+              maskedGroqKey: masked
             });
             break;
 
-          case SETTINGS_ACTIONS.CLEAR_AI_API_KEY:
+          case SETTINGS_ACTIONS.CLEAR_GROQ_API_KEY:
             set({
-              geminiApiKey: null,
-              maskedGeminiKey: null
+              groqApiKey: null,
+              maskedGroqKey: null
             });
+            break;
+
+          case SETTINGS_ACTIONS.SET_SELECTED_MODEL:
+            set({ selectedModel: action.payload });
             break;
 
           case SETTINGS_ACTIONS.OPEN_COMMAND_PALETTE:
@@ -259,11 +281,11 @@ const useSettingsStore = create(
             break;
 
           case SETTINGS_ACTIONS.OPEN_AI_KEY_DIALOG:
-            set({ geminiKeyDialogOpen: true });
+            set({ groqKeyDialogOpen: true });
             break;
 
           case SETTINGS_ACTIONS.CLOSE_AI_KEY_DIALOG:
-            set({ geminiKeyDialogOpen: false });
+            set({ groqKeyDialogOpen: false });
             break;
 
           case SETTINGS_ACTIONS.OPEN_ABOUT_DIALOG:
@@ -312,8 +334,9 @@ const useSettingsStore = create(
       name: STORAGE_KEYS.SETTINGS,
       partialize: (state) => ({
         theme: state.theme,
-        geminiApiKey: state.geminiApiKey,
-        maskedGeminiKey: state.maskedGeminiKey,
+        groqApiKey: state.groqApiKey,
+        maskedGroqKey: state.maskedGroqKey,
+        selectedModel: state.selectedModel,
       }),
     }
   )
@@ -322,26 +345,28 @@ const useSettingsStore = create(
 // Selectors
 export const settingsSelectors = {
   getTheme: (state) => state.theme,
-  getGeminiApiKey: (state) => state.geminiApiKey,
-  getMaskedGeminiKey: (state) => state.maskedGeminiKey,
+  getGroqApiKey: (state) => state.groqApiKey,
+  getMaskedGroqKey: (state) => state.maskedGroqKey,
+  getSelectedModel: (state) => state.selectedModel,
   isCommandPaletteOpen: (state) => state.commandPaletteOpen,
   isShortcutsDialogOpen: (state) => state.shortcutsDialogOpen,
-  isGeminiKeyDialogOpen: (state) => state.geminiKeyDialogOpen,
+  isGroqKeyDialogOpen: (state) => state.groqKeyDialogOpen,
   isAboutDialogOpen: (state) => state.aboutDialogOpen,
   isReportDialogOpen: (state) => state.reportDialogOpen,
   getConfirmDialog: (state) => state.confirmDialog,
 
   // Computed selectors
-  hasGeminiKey: (state) => !!state.geminiApiKey,
+  hasGroqKey: (state) => !!state.groqApiKey,
   isDarkTheme: (state) => state.theme === THEMES.DARK,
   isLightTheme: (state) => state.theme === THEMES.LIGHT,
   getAllSettings: (state) => ({
     theme: state.theme,
-    geminiApiKey: state.geminiApiKey,
-    maskedGeminiKey: state.maskedGeminiKey,
+    groqApiKey: state.groqApiKey,
+    maskedGroqKey: state.maskedGroqKey,
+    selectedModel: state.selectedModel,
     commandPaletteOpen: state.commandPaletteOpen,
     shortcutsDialogOpen: state.shortcutsDialogOpen,
-    geminiKeyDialogOpen: state.geminiKeyDialogOpen,
+    groqKeyDialogOpen: state.groqKeyDialogOpen,
     aboutDialogOpen: state.aboutDialogOpen,
     reportDialogOpen: state.reportDialogOpen,
     confirmDialog: state.confirmDialog,
@@ -350,15 +375,16 @@ export const settingsSelectors = {
 
 // Convenience hooks that use selectors
 export const useTheme = () => useSettingsStore(settingsSelectors.getTheme);
-export const useGeminiApiKey = () => useSettingsStore(settingsSelectors.getGeminiApiKey);
-export const useMaskedGeminiKey = () => useSettingsStore(settingsSelectors.getMaskedGeminiKey);
+export const useGroqApiKey = () => useSettingsStore(settingsSelectors.getGroqApiKey);
+export const useMaskedGroqKey = () => useSettingsStore(settingsSelectors.getMaskedGroqKey);
+export const useSelectedModel = () => useSettingsStore(settingsSelectors.getSelectedModel);
 export const useCommandPaletteOpen = () => useSettingsStore(settingsSelectors.isCommandPaletteOpen);
 export const useShortcutsDialogOpen = () => useSettingsStore(settingsSelectors.isShortcutsDialogOpen);
-export const useGeminiKeyDialogOpen = () => useSettingsStore(settingsSelectors.isGeminiKeyDialogOpen);
+export const useGroqKeyDialogOpen = () => useSettingsStore(settingsSelectors.isGroqKeyDialogOpen);
 export const useAboutDialogOpen = () => useSettingsStore(settingsSelectors.isAboutDialogOpen);
 export const useReportDialogOpen = () => useSettingsStore(settingsSelectors.isReportDialogOpen);
 export const useConfirmDialog = () => useSettingsStore(settingsSelectors.getConfirmDialog);
-export const useHasGeminiKey = () => useSettingsStore(settingsSelectors.hasGeminiKey);
+export const useHasGroqKey = () => useSettingsStore(settingsSelectors.hasGroqKey);
 export const useIsDarkTheme = () => useSettingsStore(settingsSelectors.isDarkTheme);
 export const useIsLightTheme = () => useSettingsStore(settingsSelectors.isLightTheme);
 export const useAllSettings = () => useSettingsStore(settingsSelectors.getAllSettings);
@@ -370,16 +396,17 @@ export const useSettingsActions = () => {
   return {
     setTheme: (theme) => dispatch(settingsActions.setTheme(theme)),
     toggleTheme: () => dispatch(settingsActions.toggleTheme()),
-    setGeminiApiKey: (key) => dispatch(settingsActions.setGeminiApiKey(key)),
-    clearGeminiApiKey: () => dispatch(settingsActions.clearGeminiApiKey()),
+    setGroqApiKey: (key) => dispatch(settingsActions.setGroqApiKey(key)),
+    clearGroqApiKey: () => dispatch(settingsActions.clearGroqApiKey()),
+    setSelectedModel: (model) => dispatch(settingsActions.setSelectedModel(model)),
     openCommandPalette: () => dispatch(settingsActions.openCommandPalette()),
     closeCommandPalette: () => dispatch(settingsActions.closeCommandPalette()),
     toggleCommandPalette: () => dispatch(settingsActions.toggleCommandPalette()),
     openShortcutsDialog: () => dispatch(settingsActions.openShortcutsDialog()),
     closeShortcutsDialog: () => dispatch(settingsActions.closeShortcutsDialog()),
     toggleShortcutsDialog: () => dispatch(settingsActions.toggleShortcutsDialog()),
-    openGeminiKeyDialog: () => dispatch(settingsActions.openGeminiKeyDialog()),
-    closeGeminiKeyDialog: () => dispatch(settingsActions.closeGeminiKeyDialog()),
+    openGroqKeyDialog: () => dispatch(settingsActions.openGroqKeyDialog()),
+    closeGroqKeyDialog: () => dispatch(settingsActions.closeGroqKeyDialog()),
     openAboutDialog: () => dispatch(settingsActions.openAboutDialog()),
     closeAboutDialog: () => dispatch(settingsActions.closeAboutDialog()),
     openReportDialog: () => dispatch(settingsActions.openReportDialog()),

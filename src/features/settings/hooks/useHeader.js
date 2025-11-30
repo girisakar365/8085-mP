@@ -3,7 +3,7 @@ import { useSettingsActions, useTheme } from '../stores/settingsStore';
 
 export function useHeader() {
   const theme = useTheme();
-  const { toggleTheme, openGeminiKeyDialog } = useSettingsActions();
+  const { toggleTheme, openGroqKeyDialog } = useSettingsActions();
 
   // Menu state
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,7 +24,7 @@ export function useHeader() {
   // Menu action handlers
   const handleApiKey = () => {
     setMenuOpen(false);
-    openGeminiKeyDialog();
+    openGroqKeyDialog();
   };
 
   const handleThemeToggle = () => {

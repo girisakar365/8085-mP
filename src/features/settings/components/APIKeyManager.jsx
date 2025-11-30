@@ -1,9 +1,11 @@
-import { Key, Eye, EyeOff, ExternalLink, Check, X } from "lucide-react";
+import { Key, Eye, EyeOff, ExternalLink, Check, X, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import {
-  useGeminiApiKey,
-  useMaskedGeminiKey,
+  useGroqApiKey,
+  useMaskedGroqKey,
+  useSelectedModel,
   useSettingsActions,
+  AI_MODELS,
 } from "../stores/settingsStore";
 import groqService from "../../../shared/services/groqService";
 import ConfirmDialog from "../../../shared/components/dialogs/ConfirmDialog";
@@ -14,7 +16,34 @@ const ANIMATION_DURATION = {
   SLOW: 300,
 };
 
-function ExistingKeyView({ maskedKey, onUpdate, onDelete }) {
+function ModelSelector({ selectedModel, onModelChange, isLoading }) {
+  return (
+    <div className="api-key-input-group">
+      <label htmlFor="model-select">AI Model</label>
+      <div className="model-select-wrapper">
+        <select
+          id="model-select"
+          value={selectedModel}
+          onChange={(e) => onModelChange(e.target.value)}
+          className="model-select"
+          disabled={isLoading}
+        >
+          {AI_MODELS.map((model) => (
+            <option key={model.id} value={model.id}>
+              {model.name} ({model.provider})
+            </option>
+          ))}
+        </select>
+        <ChevronDown size={16} className="model-select-icon" />
+      </div>
+      <p className="model-select-hint">
+        Select the AI model to use for code assistance and explanations.
+      </p>
+    </div>
+  );
+}
+
+function ExistingKeyView({ maskedKey, selectedModel, onUpdate, onDelete, onModelChange }) {
   return (
     <div className="api-key-existing">
       <div className="api-key-status">
@@ -22,6 +51,11 @@ function ExistingKeyView({ maskedKey, onUpdate, onDelete }) {
         <span>API key is configured</span>
       </div>
       <div className="api-key-masked">{maskedKey}</div>
+      <ModelSelector
+        selectedModel={selectedModel}
+        onModelChange={onModelChange}
+        isLoading={false}
+      />
       <div className="api-key-actions">
         <button onClick={onUpdate} className="btn btn-secondary">
           Update Key
@@ -40,15 +74,17 @@ function KeyInputForm({
   isLoading,
   error,
   success,
+  selectedModel,
   onKeyChange,
   onToggleVisibility,
+  onModelChange,
   onSave,
   onCancel,
 }) {
   return (
     <>
       <p className="api-key-description">
-        Enter your Google Gemini API key to enable AI features like error
+        Enter your Groq API key to enable AI features like error
         explanations and code assistance.
       </p>
 
@@ -60,7 +96,7 @@ function KeyInputForm({
             type={showKey ? "text" : "password"}
             value={apiKey}
             onChange={(e) => onKeyChange(e.target.value)}
-            placeholder="Enter your Google Gemini API key"
+            placeholder="Enter your Groq API key (starts with gsk_)"
             className="api-key-input"
             disabled={isLoading}
             autoComplete="off"
@@ -77,6 +113,12 @@ function KeyInputForm({
         </div>
       </div>
 
+      <ModelSelector
+        selectedModel={selectedModel}
+        onModelChange={onModelChange}
+        isLoading={isLoading}
+      />
+
       {error && <div className="api-key-error">{error}</div>}
 
       {success && (
@@ -90,18 +132,18 @@ function KeyInputForm({
           <strong>Don't have an API key?</strong>
         </p>
         <a
-          href="https://aistudio.google.com/app/apikey"
+          href="https://console.groq.com/keys"
           target="_blank"
           rel="noopener noreferrer"
           className="api-key-link"
         >
-          Get a free API key from Google AI Studio
+          Get a free API key from Groq Console
           <ExternalLink size={20} />
         </a>
         <p className="api-key-note">
           <strong>Security:</strong> Your API key is encrypted and stored
           locally in your browser. It never leaves your device except when
-          making requests to Google's API.
+          making requests to Groq's API.
         </p>
       </div>
 
@@ -133,13 +175,14 @@ function APIKeyManager({ isOpen, onClose }) {
   const [success, setSuccess] = useState(false);
   const [showInput, setShowInput] = useState(false);
 
-  const geminiApiKey = useGeminiApiKey();
-  const maskedGeminiKey = useMaskedGeminiKey();
-  const { setGeminiApiKey, clearGeminiApiKey } = useSettingsActions();
+  const groqApiKey = useGroqApiKey();
+  const maskedGroqKey = useMaskedGroqKey();
+  const selectedModel = useSelectedModel();
+  const { setGroqApiKey, clearGroqApiKey, setSelectedModel } = useSettingsActions();
 
   const { dialogState, showConfirm, closeDialog } = useConfirmDialog();
 
-  const hasExistingKey = !!geminiApiKey;
+  const hasExistingKey = !!groqApiKey;
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -158,11 +201,11 @@ function APIKeyManager({ isOpen, onClose }) {
     setIsLoading(true);
 
     try {
-      const result = await geminiService.testApiKey(inputKey);
+      const result = await groqService.testApiKey(inputKey);
 
       if (result.valid) {
-        setGeminiApiKey(inputKey);
-        geminiService.initialize(inputKey);
+        setGroqApiKey(inputKey);
+        groqService.initialize(inputKey);
 
         setSuccess(true);
         setInputKey("");
@@ -193,7 +236,7 @@ function APIKeyManager({ isOpen, onClose }) {
     });
 
     if (confirmed) {
-      clearGeminiApiKey();
+      clearGroqApiKey();
       groqService.initialize(null);
       setShowInput(false);
     }
@@ -216,6 +259,11 @@ function APIKeyManager({ isOpen, onClose }) {
     }
   };
 
+  const handleModelChange = (model) => {
+    setSelectedModel(model);
+    groqService.setModel(model);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -225,7 +273,7 @@ function APIKeyManager({ isOpen, onClose }) {
           <div className="dialog-icon">
             <Key size={24} />
           </div>
-          <h2>Google Gemini API Key</h2>
+          <h2>Groq API Key</h2>
           <button
             onClick={handleClose}
             className="dialog-close"
@@ -239,9 +287,11 @@ function APIKeyManager({ isOpen, onClose }) {
         <div className="api-key-content">
           {hasExistingKey && !showInput ? (
             <ExistingKeyView
-              maskedKey={maskedGeminiKey}
+              maskedKey={maskedGroqKey}
+              selectedModel={selectedModel}
               onUpdate={handleUpdate}
               onDelete={handleDelete}
+              onModelChange={handleModelChange}
             />
           ) : (
             <KeyInputForm
@@ -250,8 +300,10 @@ function APIKeyManager({ isOpen, onClose }) {
               isLoading={isLoading}
               error={error}
               success={success}
+              selectedModel={selectedModel}
               onKeyChange={setInputKey}
               onToggleVisibility={() => setShowKey(!showKey)}
+              onModelChange={handleModelChange}
               onSave={handleSave}
               onCancel={handleClose}
             />

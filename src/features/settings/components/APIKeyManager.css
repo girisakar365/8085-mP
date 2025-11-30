@@ -260,10 +260,57 @@
   margin-bottom: 16px;
 }
 
+/* Model Selector Styles */
+.model-select-wrapper {
+  position: relative;
+}
+
+.model-select {
+  width: 100%;
+  padding: 10px 36px 10px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.model-select:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.model-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.model-select-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--text-secondary);
+}
+
+.model-select-hint {
+  margin: 8px 0 0 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
 .api-key-actions {
   display: flex;
   gap: 8px;
   justify-content: center;
+  margin-top: 16px;
 }
 
 .api-key-footer {

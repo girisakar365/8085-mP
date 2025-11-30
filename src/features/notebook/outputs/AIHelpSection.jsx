@@ -1,26 +1,27 @@
 import { useState } from "react";
 import { Sparkles } from "lucide-react";
 import groqService from "../../../shared/services/groqService";
-import { useGeminiApiKey } from "../../settings/stores/settingsStore";
+import { useGroqApiKey } from "../../settings/stores/settingsStore";
 import { AI_PROMPTS } from "../../../constants";
 import "./MagicOutputs.css";
+import { marked } from 'marked';
 
 export default function AIHelpSection({ errorData, cellContent }) {
   const [aiHelp, setAiHelp] = useState(null);
   const [isLoadingAI, setIsLoadingAI] = useState(false);
-  const geminiApiKey = useGeminiApiKey();
+  const groqApiKey = useGroqApiKey();
 
   const handleAskAI = async () => {
-    if (!geminiApiKey) {
+    if (!groqApiKey) {
       setAiHelp({
         type: "warning",
-        message: "Please configure your Google Gemini API key to use AI assistance.",
+        message: "Please configure your Groq API key to use AI assistance.",
       });
       return;
     }
 
     setIsLoadingAI(true);
-    groqService.initialize(geminiApiKey);
+    groqService.initialize(groqApiKey);
 
     try {
       const prompt = AI_PROMPTS.ERROR_EXPLANATION
@@ -56,7 +57,10 @@ export default function AIHelpSection({ errorData, cellContent }) {
       {aiHelp && (
         <div className={`ai-help-response ${aiHelp.type}`}>
           <div className="ai-help-header">AI Assistant</div>
-          <div className="ai-help-content">{aiHelp.message}</div>
+          <div
+            className="ai-help-content"
+            dangerouslySetInnerHTML={{ __html: marked.parse(aiHelp.message || '') }}
+          />
         </div>
       )}
     </div>

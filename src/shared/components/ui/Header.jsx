@@ -1,5 +1,5 @@
 import { useHeader } from '../../../features/settings/hooks/useHeader';
-import { useGeminiKeyDialogOpen, useAboutDialogOpen, useReportDialogOpen, useSettingsActions } from '../../../features/settings/stores/settingsStore';
+import { useGroqKeyDialogOpen, useAboutDialogOpen, useReportDialogOpen, useSettingsActions } from '../../../features/settings/stores/settingsStore';
 import APIKeyManager from '../../../features/settings/components/APIKeyManager';
 import AboutDialog from '../../../pages/About/AboutDialog';
 import ReportDialog from '../../../pages/Report/ReportDialog';
@@ -31,10 +31,10 @@ export default function Header() {
     handleReport,
   } = useHeader();
 
-  const isGeminiKeyDialogOpen = useGeminiKeyDialogOpen();
+  const isGroqKeyDialogOpen = useGroqKeyDialogOpen();
   const isAboutDialogOpen = useAboutDialogOpen();
   const isReportDialogOpen = useReportDialogOpen();
-  const { closeGeminiKeyDialog, openAboutDialog, closeAboutDialog, openReportDialog, closeReportDialog } = useSettingsActions();
+  const { closeGroqKeyDialog, openAboutDialog, closeAboutDialog, openReportDialog, closeReportDialog } = useSettingsActions();
 
   const handleAboutClick = () => {
     handleAbout();
@@ -91,8 +91,8 @@ export default function Header() {
 
       <>
         <APIKeyManager
-          isOpen={isGeminiKeyDialogOpen}
-          onClose={closeGeminiKeyDialog}
+          isOpen={isGroqKeyDialogOpen}
+          onClose={closeGroqKeyDialog}
         />
         <AboutDialog
           isOpen={isAboutDialogOpen}

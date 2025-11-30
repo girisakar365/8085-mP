@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import api from '../../../shared/services/api';
 import { handleMagicCommand } from '../../../shared/services/magicCommand';
-import { useGeminiApiKey } from '../../settings/stores/settingsStore';
+import { useGroqApiKey } from '../../settings/stores/settingsStore';
 import { useProcessorActions } from '../../processor/stores/processorStore';
 import notebookDB from '../../../shared/utils/notebookDB';
 import { SERVICE_CONFIG } from '../../../constants';
@@ -37,7 +37,7 @@ export default function useNotebook() {
   const executionCountRef = useRef(0);
 
   const { updateState: updateProcessorState, resetState: resetProcessorState } = useProcessorActions();
-  const apiKey = useGeminiApiKey();
+  const apiKey = useGroqApiKey();
 
   useEffect(() => {
     const loadNotebook = async () => {

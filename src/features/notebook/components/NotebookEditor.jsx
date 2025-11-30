@@ -25,7 +25,7 @@ export default function NotebookEditor({
   const [deleteKeyCount, setDeleteKeyCount] = useState(0);
   const deleteTimerRef = useRef(null);
   
-  const { openGeminiKeyDialog } = useSettingsActions();
+  const { openGroqKeyDialog } = useSettingsActions();
 
   useEffect(() => {
     if (activeCellId) {
@@ -184,7 +184,7 @@ export default function NotebookEditor({
   };
 
   const handleOpenAIKey = () => {
-    openGeminiKeyDialog();
+    openGroqKeyDialog();
   };
 
   return (

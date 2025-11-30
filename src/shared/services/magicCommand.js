@@ -92,13 +92,13 @@ const handleAskAICommand = async (args, apiKey) => {
     };
   }
 
-  const currentApiKey = apiKey || useSettingsStore.getState().geminiApiKey;
+  const currentApiKey = apiKey || useSettingsStore.getState().groqApiKey;
 
   if (!currentApiKey) {
     return {
       type: 'warning',
       data: {
-        message: 'API Key Required: AI features require a Google Gemini API key. Click "Configure AI Key" in the settings menu to set it up.'
+        message: 'API Key Required: AI features require a Groq API key. Click "Configure AI Key" in the settings menu to set it up.'
       }
     };
   }
@@ -116,7 +116,7 @@ const handleAskAICommand = async (args, apiKey) => {
     return {
       type: showKeyButton ? 'warning' : 'error',
       data: {
-        message: `AI Service Error: ${error.message}${showKeyButton ? '\nPlease configure your Google Gemini API key.' : ''}`
+        message: `AI Service Error: ${error.message}${showKeyButton ? '\nPlease configure your Groq API key.' : ''}`
       }
     };
   }

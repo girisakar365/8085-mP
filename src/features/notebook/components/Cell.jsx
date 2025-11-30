@@ -20,6 +20,7 @@ import { useCellExecution } from "../hooks/useCellExecution";
 import { useTheme } from "../../settings/stores/settingsStore";
 import groqService from "../../../shared/services/groqService";
 import CellOutput from "./CellOutput";
+import { marked } from 'marked';
 import "./Cell.css";
 
 const Cell = forwardRef(
@@ -151,7 +152,7 @@ const Cell = forwardRef(
             "AI service temporarily unavailable. Please try again later.";
         } else if (error.message?.includes("quota")) {
           errorMessage =
-            "API quota exceeded. Please check your Google Gemini API key settings.";
+            "API quota exceeded. Please check your Groq API key settings.";
         } else if (
           error.message?.includes("network") ||
           error.message?.includes("fetch")
@@ -365,9 +366,10 @@ const Cell = forwardRef(
                               <Sparkles size={16} aria-hidden="true" />
                               <strong>AI Explanation</strong>
                             </div>
-                            <div className="ai-explanation-content">
-                              {cell.output.aiExplanation}
-                            </div>
+                            <div
+                              className="ai-explanation-content"
+                              dangerouslySetInnerHTML={{ __html: marked.parse(cell.output.aiExplanation || '') }}
+                            />
                           </div>
                         )}
                       </>
