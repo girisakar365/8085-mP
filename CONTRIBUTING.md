@@ -35,9 +35,9 @@ When reporting a bug, include:
 1. Fork and clone the repository:
 
    ```bash
-   git clone https://github.com/YOUR-USERNAME/8085-mP.git
+   git clone https://github.com/YOUR-USERNAME/8085-Microprocessor.git
    cd 8085-Microprocessor
-   git remote add upstream https://github.com/girisakar365/8085-mP.git
+   git remote add upstream https://github.com/girisakar365/8085-Microprocessor.git
    ```
 
 2. Run the setup script:
