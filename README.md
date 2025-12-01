@@ -50,7 +50,7 @@ Install [Microsoft Visual Studio C++ Build Tools](https://visualstudio.microsoft
 ### Quick Setup
 
 ```bash
-git clone https://github.com/girisakar365/8085-mP.git
+git clone https://github.com/girisakar365/8085-Microprocessor.git
 cd 8085-Microprocessor
 
 # Linux/macOS
@@ -66,7 +66,7 @@ chmod +x Scripts/dev.sh
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/girisakar365/8085-mP.git
+   git clone https://github.com/girisakar365/8085-Microprocessor.git
    cd 8085-Microprocessor
    ```
 
