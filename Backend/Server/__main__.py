@@ -14,16 +14,12 @@ app = FastAPI(
     description="Simulator for the 8085 microprocessor.",
     version="1.0.0",
 )
-
-cors_origins = os.getenv(
-    "CORS_ORIGINS", 
-    "http://127.185.243.17:4916"
-
-).split(",")
+VITE_DEV_ORIGIN = os.getenv("VITE_DEV_ORIGIN", "http://127.185.243.17:4916")
+TAURI_ORIGIN = os.getenv("TAURI_ORIGIN", "tauri://localhost")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=cors_origins,
+    allow_origins=[VITE_DEV_ORIGIN, TAURI_ORIGIN],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
