@@ -36,7 +36,7 @@ When reporting a bug, include:
 
    ```bash
    git clone https://github.com/YOUR-USERNAME/8085-mP.git
-   cd 8085-mP
+   cd 8085-Microprocessor
    git remote add upstream https://github.com/girisakar365/8085-mP.git
    ```
 
@@ -102,12 +102,8 @@ When reporting a bug, include:
 ## Testing
 
 ```bash
-# Backend tests
-cd Backend
-python -m pytest
-
 # Run specific tests
-python -m pytest Test/Commands/arithmetic.py
+python -m Test.Commands.arithmetic
 ```
 
 ## Thank You
