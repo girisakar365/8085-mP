@@ -51,7 +51,7 @@ Install [Microsoft Visual Studio C++ Build Tools](https://visualstudio.microsoft
 
 ```bash
 git clone https://github.com/girisakar365/8085-mP.git
-cd 8085-mP
+cd 8085-Microprocessor
 
 # Linux/macOS
 chmod +x Scripts/dev.sh
@@ -67,7 +67,7 @@ chmod +x Scripts/dev.sh
 
    ```bash
    git clone https://github.com/girisakar365/8085-mP.git
-   cd 8085-mP
+   cd 8085-Microprocessor
    ```
 
 2. **Setup Backend**
