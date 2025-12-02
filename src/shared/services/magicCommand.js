@@ -134,21 +134,26 @@ const handleDocsCommand = async (args) => {
   }
 
   try {
-    const result = await api.getDocs(args.toUpperCase());
+    const instruction = args.split(/\s+/)[0].toUpperCase();
+    const result = await api.getDocs(instruction);
     
+    // Check for fetch/network error
     if (result && result.error) {
       return {
         type: 'error',
         data: {
           title: 'Documentation Error',
-          message: result.message,
+          message: result.message || 'Failed to fetch documentation',
           error: result.details
         }
       };
     }
     
+    // Check for valid documentation response
     if (result && result.documentation) {
       const docText = result.documentation.trim();
+      
+      // Check if it's an invalid instruction message
       if (docText.startsWith('Invalid Instruction') || docText.includes('not found')) {
         return {
           type: 'error',
@@ -156,8 +161,8 @@ const handleDocsCommand = async (args) => {
             title: 'Documentation Error',
             message: docText,
             error: {
-              instruction: result.instruction || args.toUpperCase(),
-              hint: 'Valid instructions: MOV, MVI, LDA, STA, ADD, SUB, etc.'
+              instruction: result.instruction || instruction,
+              hint: 'Valid instructions: MOV, MVI, LDA, STA, ADD, SUB, INR, DCR, etc.'
             }
           }
         };
@@ -177,7 +182,7 @@ const handleDocsCommand = async (args) => {
       type: 'error',
       data: { 
         title: 'Documentation Error',
-        message: 'Documentation not found for instruction: ' + args 
+        message: 'Documentation not found for instruction: ' + instruction 
       }
     };
   } catch (error) {
@@ -267,31 +272,57 @@ const handleAssembleCommand = async (args) => {
     };
   }
 
-  const result = await api.assemble(args);
-  
-  if (result && result.status === 'success' && result.label && result.data) {
+  try {
+    const result = await api.assemble(args);
+    
+    // Check for error response
+    if (result && result.error) {
+      return {
+        type: 'error',
+        data: {
+          title: 'Assembly Error',
+          message: result.message || 'Failed to assemble code',
+          error: result.details
+        }
+      };
+    }
+    
+    // Check for success response (backend returns status: 'success')
+    if (result && result.status === 'success' && result.label && result.data) {
+      return {
+        type: 'assembly-table',
+        data: {
+          labels: result.label,
+          rows: result.data
+        }
+      };
+    }
+    
+    // Check for error response from backend (status: 'error' or success: false)
+    if (result && (result.status === 'error' || result.success === false)) {
+      return {
+        type: 'error',
+        data: {
+          title: 'Assembly Error',
+          message: result.details?.message || 'Assembly failed',
+          error: result.details
+        }
+      };
+    }
+    
     return {
-      type: 'assembly-table',
+      type: 'error',
       data: {
-        labels: result.label,
-        rows: result.data
+        message: 'Unable to process the assembly code. Please check your syntax and try again.'
       }
     };
-  } else if (result && result.status === 'error') {
+  } catch (error) {
     return {
       type: 'error',
       data: {
         title: 'Assembly Error',
-        message: result.details.message,
-        error: result.details.details
+        message: 'Failed to assemble code: ' + error.message
       }
     };
   }
-  
-  return {
-    type: 'error',
-    data: {
-      message: 'Unable to process the assembly code. Please check your syntax and try again.'
-    }
-  };
 };

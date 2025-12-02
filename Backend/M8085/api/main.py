@@ -38,7 +38,7 @@ async def assemble(request: tc.Request):
     Returns structured JSON with assembly results or errors.
     """
     from .. import Parser, Assembler, Message
-
+    Assembler().reset()
     result = Parser(request.code).parse()
     if isinstance(result, Message):
         return {
