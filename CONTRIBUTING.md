@@ -1,6 +1,6 @@
-# Contributing to ASM Studio
+# Contributing to 8085 Microprocessor Simulator
 
-Welcome! We're excited that you're interested in contributing to ASM Studio. This document outlines the process for contributing to this project.
+Welcome! We're excited that you're interested in contributing to 8085 Microprocessor Simulator. This document outlines the process for contributing to this project.
 
 ## Code of Conduct
 
@@ -108,6 +108,6 @@ python -m Test.Commands.arithmetic
 
 ## Thank You
 
-Your contributions help make ASM Studio better for everyone.
+Your contributions help make 8085 Microprocessor Simulator better for everyone.
 
 Last updated: November 2025

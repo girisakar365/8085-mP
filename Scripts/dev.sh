@@ -10,7 +10,7 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 BACKEND_DIR="$PROJECT_ROOT/Backend"
 
 echo "=========================================="
-echo "   8085 ASM Studio - Development Setup   "
+echo "   8085 Microprocessor Simulator - Development Setup   "
 echo "=========================================="
 
 # ----- Pre-flight checks -----

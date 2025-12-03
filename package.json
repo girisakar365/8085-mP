@@ -2,7 +2,7 @@
   "name": "asm-studio",
   "productName": "asm-studio",
   "version": "1.0.0",
-  "description": "Asm Studio : 8085 Microprocessor Simulator",
+  "description": "8085 Microprocessor Simulator",
   "main": "index.html",
   "type": "module",
   "scripts": {

@@ -1,11 +1,11 @@
-# ASM Studio - 8085 Microprocessor Simulator
+# 8085 Microprocessor Simulator
 
 [![License](https://img.shields.io/badge/License-Non--Commercial-blue.svg)](LICENSE.md)
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)](https://python.org)
 [![Node.js](https://img.shields.io/badge/Node.js-22+-339933?logo=node.js&logoColor=white)](https://nodejs.org)
 [![Rust](https://img.shields.io/badge/Rust-1.70+-000000?logo=rust&logoColor=white)](https://rust-lang.org)
 
-ASM Studio is an open-source simulator for the Intel 8085 microprocessor. It provides an interface to write, assemble, and execute 8085 assembly programs while observing the complete state of the processor including registers, memory, flags, and I/O ports.
+8085 Microprocessor Simulator is an open-source simulator for the Intel 8085 microprocessor. It provides an interface to write, assemble, and execute 8085 assembly programs while observing the complete state of the processor including registers, memory, flags, and I/O ports.
 
 ## Prerequisites
 

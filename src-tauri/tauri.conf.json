@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "ASM STUDIO",
+  "productName": "8085 Microprocessor Simulator",
   "version": "0.1.0",
-  "identifier": "com.girisakar365.asmstudio",
+  "identifier": "com.girisakar365.8085mpsimulator",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://127.185.243.17:4916",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "ASM STUDIO",
+        "title": "8085 Microprocessor Simulator",
         "width": 1200,
         "height": 800,
         "minWidth": 800,

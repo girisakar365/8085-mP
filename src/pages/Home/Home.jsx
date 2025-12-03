@@ -101,7 +101,7 @@ export default function Home() {
       if (includeMetadata) {
         exportData.version = "1.0.0";
         exportData.timestamp = new Date().toISOString();
-        exportData.appName = "asm studio";
+        exportData.appName = "8085 Microprocessor Simulator";
       }
 
       const jsonString = JSON.stringify(exportData, null, 2);

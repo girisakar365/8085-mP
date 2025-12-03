@@ -3,7 +3,7 @@ import { Info } from 'lucide-react';
 import './AboutDialog.css';
 
 const APP_CONFIG = {
-  NAME: 'asm studio',
+  NAME: '8085 Microprocessor Simulator',
   DESCRIPTION: '8085 Assembly Notebook & AI Assistant',
   VERSION: '1.0.0',
 };

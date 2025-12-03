@@ -14,7 +14,7 @@ ENTRY_POINT="Server"
 OUTPUT_DIR="dist"
 
 echo "================================================"
-echo "  ASM STUDIO - Backend Build Script"
+echo "  8085 Microprocessor Simulator - Backend Build Script"
 echo "================================================"
 echo ""
 echo "Project Root: $PROJECT_ROOT"

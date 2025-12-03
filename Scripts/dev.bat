@@ -12,7 +12,7 @@ set "PROJECT_ROOT=%PROJECT_ROOT:~0,-1%"
 set "BACKEND_DIR=%PROJECT_ROOT%\Backend"
 
 echo ==========================================
-echo    8085 ASM Studio - Development Setup   
+echo    8085 Microprocessor Simulator - Development Setup   
 echo ==========================================
 echo.
 

@@ -1,6 +1,6 @@
 # Backend - 8085 Simulator Engine
 
-This directory contains the Python backend for ASM Studio, including the core 8085 simulator engine and REST API.
+This directory contains the Python backend for 8085 Microprocessor Simulator, including the core 8085 simulator engine and REST API.
 
 ## Structure
 

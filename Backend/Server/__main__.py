@@ -18,7 +18,7 @@ BACKEND_HOST = os.getenv("BACKEND_HOST", "127.0.0.1")
 IS_TAURI = os.getenv("TAURI_ENV", "0") == "1"
 
 app = FastAPI(
-    title="8085 Asm Studio",
+    title="8085 Microprocessor Simulator",
     description="Simulator for the 8085 microprocessor.",
     version="1.0.0",
 )
@@ -78,7 +78,7 @@ async def health_check():
     """Health check endpoint for monitoring."""
     return {
         "status": "ok",
-        "message": "8085 Asm Studio Backend is running.",
+        "message": "8085 Microprocessor Simulator Backend is running.",
         "port": BACKEND_PORT,
         "host": BACKEND_HOST,
     }
@@ -87,7 +87,7 @@ async def health_check():
 @app.get("/")
 async def root():
     """Root endpoint."""
-    return {"message": "Welcome to the 8085 Asm Studio Backend!"}
+    return {"message": "Welcome to the 8085 Microprocessor Simulator Backend!"}
 
 
 @app.get("/config")
@@ -111,7 +111,7 @@ if __name__ == "__main__":
     signal.signal(signal.SIGTERM, graceful_shutdown)
     signal.signal(signal.SIGINT, graceful_shutdown)
     
-    print(f"Starting 8085 Asm Studio Backend...")
+    print(f"Starting 8085 Microprocessor Simulator Backend...")
     print(f"  Host: {BACKEND_HOST}")
     print(f"  Port: {BACKEND_PORT}")
     print(f"  Tauri Environment: {IS_TAURI}")

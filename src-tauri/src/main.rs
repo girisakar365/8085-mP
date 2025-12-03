@@ -76,7 +76,7 @@ fn get_backend_path() -> Option<PathBuf> {
     #[cfg(not(target_os = "windows"))]
     let backend_file = "server";
 
-    let product_name = "ASM STUDIO"; // Must match tauri.conf.json
+    let product_name = "8085 Microprocessor Simulator"; // Must match tauri.conf.json
 
     let mut candidates: Vec<PathBuf> = Vec::new();
 
