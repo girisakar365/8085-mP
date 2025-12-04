@@ -54,6 +54,7 @@ python3 -m nuitka \
   --follow-imports \
   --enable-plugin=no-qt \
   --python-flag=-m \
+  --assume-yes-for-downloads \
   --include-data-files=M8085/commands_property.yml=M8085/commands_property.yml \
   --include-data-files=M8085/docs.yml=M8085/docs.yml \
   --output-dir=${OUTPUT_DIR} \
