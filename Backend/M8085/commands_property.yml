@@ -1,0 +1,697 @@
+MOV:
+  byte: 1
+  param_rule: [r,r]
+  state: ["opcode", "read", "write"]
+  syntax: "MOV rd, rs"
+  A,A: "7F"
+  A,B: "78"
+  A,C: "79"
+  A,D: "7A"
+  A,E: "7B"
+  A,H: "7C"
+  A,L: "7D"
+  A,M: "7E"
+  B,A: "47"
+  B,B: "40"
+  B,C: "41"
+  B,D: "42"
+  B,E: "43"
+  B,H: "44"
+  B,L: "45"
+  B,M: "46"
+  C,A: "4F"
+  C,B: "48"
+  C,C: "49"
+  C,D: "4A"
+  C,E: "4B"
+  C,H: "4C"
+  C,L: "4D"
+  C,M: "4E"
+  D,A: "57"
+  D,B: "50"
+  D,C: "51"
+  D,D: "52"
+  D,E: "53"
+  D,H: "54"
+  D,L: "55"
+  D,M: "56"
+  E,A: "5F"
+  E,B: "58"
+  E,C: "59"
+  E,D: "5A"
+  E,E: "5B"
+  E,H: "5C"
+  E,L: "5D"
+  E,M: "5E"
+  H,A: "67"
+  H,B: "60"
+  H,C: "61"
+  H,D: "62"
+  H,E: "63"
+  H,H: "64"
+  H,L: "65"
+  H,M: "66"
+  L,A: "6F"
+  L,B: "68"
+  L,C: "69"
+  L,D: "6A"
+  L,E: "6B"
+  L,H: "6C"
+  L,L: "6D"
+  L,M: "6E"
+  M,A: "77"
+  M,B: "70"
+  M,C: "71"
+  M,D: "72"
+  M,E: "73"
+  M,H: "74"
+  M,L: "75"
+
+MVI:
+  byte: 2
+  param_rule: [r,"m:8"]
+  state: ["opcode", "read"]
+  syntax: "MVI r, data (8-bit)"
+  B: "06"
+  C: "0E"
+  D: "16"
+  E: "1E"
+  H: "26"
+  L: "2E"
+  M: "36"
+  A: "3E"
+
+LXI:
+  byte: 3
+  param_rule: [rp,"m:16"]
+  state: ["opcode", "read", "read"]
+  syntax: "LXI rp, data (16 bit)"
+  B: "01"
+  D: "11"
+  H: "21"
+  SP: "31"
+
+XCHG:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "write", "read", "write"]
+  syntax: "XCHG takes no argument"
+  op: "EB"
+
+LDAX:
+  byte: 1
+  param_rule: [rp]
+  state: ["opcode", "read"]
+  syntax: "LDAX r pair (rp)"
+  B: "0A"
+  D: "1A"
+
+LHLD:
+  byte: 3
+  param_rule: ["m:16"]
+  state: ["opcode", "read", "read", "read", "read"]
+  syntax: "LHLD 16 bit memory location"
+  op: "2A"
+
+LDA:
+  byte: 3
+  param_rule: ["m:16"]
+  state: ["opcode", "read", "read"]
+  syntax: "LDA 16-bit memory address"
+  op: "3A"
+
+STAX:
+  byte: 1
+  param_rule: ["rp"]
+  state: ["opcode", "write"]
+  syntax: "STAX r pair (rp)"
+  B: "02"
+  D: "12"
+
+SHLD:
+  byte: 3
+  param_rule: ["m:16"]
+  state: ["opcode", "write", "write", "write", "write"]
+  syntax: "SHLD 16 bit memory location"
+  op: "22"
+
+STA:
+  byte: 3
+  param_rule: ["m:16"]
+  state: ["opcode", "write", "write"]
+  syntax: "STA 16-bit memory address"
+  op: "32"
+
+ADD:
+  byte: 1
+  param_rule: [r]
+  state: ["opcode", "read"]
+  syntax: "ADD r"
+  A: "87"
+  B: "80"
+  C: "81"
+  D: "82"
+  E: "83"
+  H: "84"
+  L: "85"
+  M: "86"
+
+ADC:
+  byte: 1
+  param_rule: [r]
+  state: ["opcode", "read"]
+  syntax: "ADC r"
+  A: "8F"
+  B: "88"
+  C: "89"
+  D: "8A"
+  E: "8B"
+  H: "8C"
+  L: "8D"
+  M: "8E"
+
+SUB:
+  byte: 1
+  param_rule: [r]
+  state: ["opcode", "read"]
+  syntax: "SUB r"
+  A: "97"
+  B: "90"
+  C: "91"
+  D: "92"
+  E: "93"
+  H: "94"
+  L: "95"
+  M: "96"
+
+SBB:
+  byte: 1
+  param_rule: [r]
+  state: ["opcode", "read"]
+  syntax: "SBB r"
+  A: "9F"
+  B: "98"
+  C: "99"
+  D: "9A"
+  E: "9B"
+  H: "9C"
+  L: "9D"
+  M: "9E"
+
+DAD:
+  byte: 1
+  param_rule: [rp]
+  state: ["opcode", "read", "write"]
+  syntax: "DAD Rp"
+  B: "09"
+  D: "19"
+  H: "29"
+  SP: "39"
+
+INR:
+  byte: 1
+  param_rule: [r]
+  state: ["opcode", "read", "write"]
+  syntax: "INR r"
+  A: "3C"
+  B: "04"
+  C: "0C"
+  D: "14"
+  E: "1C"
+  H: "24"
+  L: "2C"
+  M: "34"
+
+INX:
+  byte: 1
+  param_rule: [rp]
+  state: ["opcode", "read", "write"]
+  syntax: "INX Rp"
+  B: "03"
+  D: "13"
+  H: "23"
+  SP: "33"
+
+DCR:
+  byte: 1
+  param_rule: [r]
+  state: ["opcode", "read", "write"]
+  syntax: "DCR r"
+  A: "3D"
+  B: "05"
+  C: "0D"
+  D: "15"
+  E: "1D"
+  H: "25"
+  L: "2D"
+  M: "35"
+
+DCX:
+  byte: 1
+  param_rule: [rp]
+  state: ["opcode", "read", "write"]
+  syntax: "DCX Rp"
+  B: "0B"
+  D: "1B"
+  H: "2B"
+  SP: "3B"
+
+ANA:
+  byte: 1
+  param_rule: [r]
+  state: ["opcode", "read"]
+  syntax: "ANA r"
+  A: "A7"
+  B: "A0"
+  C: "A1"
+  D: "A2"
+  E: "A3"
+  H: "A4"
+  L: "A5"
+  M: "A6"
+
+XRA:
+  byte: 1
+  param_rule: [r]
+  state: ["opcode", "read"]
+  syntax: "XRA r/m"
+  A: "AF"
+  B: "A8"
+  C: "A9"
+  D: "AA"
+  E: "AB"
+  H: "AC"
+  L: "AD"
+  M: "AE"
+  
+ORA:
+  byte: 1
+  param_rule: [r]
+  state: ["opcode", "read"]
+  syntax: "ORA r/m"
+  A: "B7"
+  B: "B0"
+  C: "B1"
+  D: "B2"
+  E: "B3"
+  H: "B4"
+  L: "B5"
+  M: "B6"
+
+CMP:
+  byte: 1
+  param_rule: [r]
+  state: ["opcode", "read"]
+  syntax: "CMP r/m"
+  A: "BF"
+  B: "B8"
+  C: "B9"
+  D: "BA"
+  E: "BB"
+  H: "BC"
+  L: "BD"
+  M: "BE"
+
+RLC:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "write"]
+  syntax: "RLC"
+  op: "07"
+
+RRC:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "write"]
+  syntax: "RRC"
+  op: "0F"
+
+RAL:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "write"]
+  syntax: "RAL"
+  op: "17"
+
+RAR:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "write"]
+  syntax: "RAR"
+  op: "1F"
+
+ADI:
+  byte: 2
+  param_rule: ['m:8']
+  state: ["opcode", "read"]
+  syntax: "ADI 8-bit data"
+  op: "C6"
+
+ACI:
+  byte: 2
+  param_rule: ['m:8']
+  state: ["opcode", "read"]
+  syntax: "ACI 8-bit data"
+  op: "CE"
+
+SUI:
+  byte: 2
+  param_rule: ['m:8']
+  state: ["opcode", "read"]
+  syntax: "SUI 8-bit data (hex)"
+  op: "D6"
+
+SBI:
+  byte: 2
+  param_rule: ['m:8']
+  state: ["opcode", "read"]
+  syntax: "SBI 8-bit data (hex)"
+  op: "DE"
+
+ANI:
+  byte: 2
+  param_rule: ['m:8']
+  state: ["opcode", "read"]
+  syntax: "ANI 8-bit data (hex)"
+  op: "E6"
+
+XRI:
+  byte: 2
+  param_rule: ['m:8']
+  state: ["opcode", "read"]
+  syntax: "XRI 8-bit data (hex)"
+  op: "EE"
+
+ORI:
+  byte: 2
+  param_rule: ['m:8']
+  state: ["opcode", "read"]
+  syntax: "ORI 8-bit data (hex)"
+  op: "F6"
+
+CPI:
+  byte: 2
+  param_rule: ['m:8']
+  state: ["opcode", "read"]
+  syntax: "CPI 8-bit data (hex)"
+  op: "FE"
+
+IN:
+  byte: 2
+  param_rule: ['m:8']
+  state: ["opcode", "io_read"]
+  syntax: "IN 8 bit port location"
+  op: "DB"
+
+OUT:
+  byte: 2
+  param_rule: ['m:8']
+  state: ["opcode", "io_write"]
+  syntax: "OUT 8 bit port location"
+  op: "D3"
+
+CMA:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "write"]
+  syntax: "CMA"
+  op: "2F"
+
+CMC:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "write"]
+  syntax: "CMC"
+  op: "3F"
+
+STC:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "write"]
+  syntax: "STC"
+  op: "37"
+
+DAA:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "write"]
+  syntax: "DAA"
+  op: "27"
+
+JMP:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read"]
+  syntax: "JMP 16-bit address"
+  op: "C3"
+
+JNZ:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read"]
+  syntax: "JNZ 16-bit address"
+  op: "C2"
+
+JZ:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read"]
+  syntax: "JZ 16-bit address"
+  op: "CA"
+
+JNC:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read"]
+  syntax: "JNC 16-bit address"
+  op: "D2"
+
+JC:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read"]
+  syntax: "JC 16-bit address"
+  op: "DA"
+
+JPO:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read"]
+  syntax: "JPO 16-bit address"
+  op: "E2"
+
+JPE:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read"]
+  syntax: "JPE 16-bit address"
+  op: "EA"
+
+JP:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read"]
+  syntax: "JP 16-bit address"
+  op: "F2"
+
+JM:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read"]
+  syntax: "JM 16-bit address"
+  op: "FA"
+
+CALL:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read", "write", "write"]
+  syntax: "CALL 16-bit address"
+  op: "CD"
+
+CNZ:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read", "write", "write"]
+  syntax: "CNZ 16-bit address"
+  op: "C4"
+
+CZ:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read", "write", "write"]
+  syntax: "CZ 16-bit address"
+  op: "CC"
+
+CNC:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read", "write", "write"]
+  syntax: "CNC 16-bit address"
+  op: "D4"
+
+CC:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read", "write", "write"]
+  syntax: "CC 16-bit address"
+  op: "DC"
+
+CPO:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read", "write", "write"]
+  syntax: "CPO 16-bit address"
+  op: "E4"
+
+CPE:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read", "write", "write"]
+  syntax: "CPE 16-bit address"
+  op: "EC"
+
+CP:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read", "write", "write"]
+  syntax: "CP 16-bit address"
+  op: "F4"
+
+CM:
+  byte: 3
+  param_rule: ['l']
+  state: ["opcode", "read", "read", "write", "write"]
+  syntax: "CM 16-bit address"
+  op: "FC"
+
+RET:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "read"]
+  syntax: "RET"
+  op: "C9"
+
+RNZ:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "read"]
+  syntax: "RNZ"
+  op: "C0"
+
+RZ:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "read"]
+  syntax: "RZ"
+  op: "C8"
+
+RNC:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "read"]
+  syntax: "RNC"
+  op: "D0"
+
+RC:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "read"]
+  syntax: "RC"
+  op: "D8"
+
+RPO:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "read"]
+  syntax: "RPO"
+  op: "E0"
+
+RPE:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "read"]
+  syntax: "RPE"
+  op: "E8"
+
+RP:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "read"]
+  syntax: "RP"
+  op: "F0"
+
+RM:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "read"]
+  syntax: "RM"
+  op: "F8"
+
+XTHL:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "read", "write", "write"]
+  syntax: "XTHL"
+  op: "E3"
+
+SPHL:
+  byte: 1
+  param_rule: Null
+  state: ["opcode"]
+  syntax: "SPHL"
+  op: "F9"
+
+PUSH:
+  byte: 1
+  param_rule: [rp]
+  state: ["opcode", "write", "write"]
+  syntax: "PUSH rp"
+  B: "C5"
+  D: "D5"
+  H: "E5"
+  PSW: "F5"
+
+POP:
+  byte: 1
+  param_rule: [rp]
+  state: ["opcode", "read", "read"]
+  syntax: "POP rp"
+  B: "C1"
+  D: "D1"
+  H: "E1"
+  PSW: "F1"
+
+NOP:
+  byte: 1
+  param_rule: Null
+  state: ["opcode"]
+  syntax: "NOP"
+  op: "00"
+  
+HLT:
+  byte: 1
+  param_rule: Null
+  state: ["opcode"]
+  syntax: "HLT"
+  op: "76"
+
+DAA:
+  byte: 1
+  param_rule: Null
+  state: ["opcode", "read", "write"]
+  syntax: "DAA"
+  op: "27"
+
+ORG:
+  byte: 1
+  param_rule: ["m:16"]
+  state: [""]
+  syntax: "ORG 16-bit memory address"
+  op: Null
+
+DB:
+  byte: 1
+  param_rule: Null
+  state: [""]
+  syntax: "DB n1,n2,n3,... where n is an integer"
+  op: Null

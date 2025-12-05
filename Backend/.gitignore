@@ -1,0 +1,7 @@
+*.pyc
+*.vscode
+*.env
+*.log
+tempCodeRunnerFile.py
+.venv
+dist
