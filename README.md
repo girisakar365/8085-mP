@@ -1,80 +1,132 @@
-# 8085 Microprocessor Simulator CLI
+# 8085 Microprocessor Simulator
 
-Welcome to the 8085 Microprocessor Simulator Command Line Interface (CLI)!
+[![License](https://img.shields.io/badge/License-Non--Commercial-blue.svg)](LICENSE.md)
+[![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)](https://python.org)
+[![Node.js](https://img.shields.io/badge/Node.js-22+-339933?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Rust](https://img.shields.io/badge/Rust-1.70+-000000?logo=rust&logoColor=white)](https://rust-lang.org)
 
-## Overview
+8085 Microprocessor Simulator is an open-source simulator for the Intel 8085 microprocessor. It provides an interface to write, assemble, and execute 8085 assembly programs while observing the complete state of the processor including registers, memory, flags, and I/O ports.
 
-This project is a command line interface (CLI) for simulating the 8085 microprocessor. The simulator provides a convenient way to interact with an emulated 8085 microprocessor, allowing you to execute instructions and observe the state of the microprocessor, including registers, memory, flags, and more.
+## Prerequisites
 
-## Features
+You need the following tools installed on your system:
 
-- Execute a variety of 8085 instructions, such as MOV, MVI, LXI, LDA, STA, ADD, SUB, INR, DCR, and many more.
-- View the contents of registers, memory, flags, ports, and other components of the 8085 microprocessor.
-- Clear the console screen for a clean and organized interface.
-- Explore the state of the microprocessor through commands like `exmin_memory`, `exmin_port`, `exmin_memol`, `exmin_register`, and `exmin_flag`.
+- [Python](https://python.org/downloads) 3.12 or later
+- [Node.js](https://nodejs.org) 22 or later (includes npm)
+- [Rust](https://rustup.rs) 1.70 or later (includes Cargo) — for more info visit [rust-lang.org](https://www.rust-lang.org/tools/install)
+- [Git](https://git-scm.com)
 
-## Getting Started
+## System Dependencies
 
-### Prerequisites
-
-Before running the simulator, ensure that you have the required Python modules installed. You can install them using the following command:
-
-```bash
-pip install prettytable
-```
-
-### Running the Simulator
-1. Clone the repository:
-```bash
-https://github.com/girisakar365/8085-mP.git
-```
-2. Navigate to the project directory:
-```bash
-cd 8085-mP
-```
-3. Run the CLI:
-```bash
-python CLI.py
-```
-
-## Usage
-1. After launching the simulator, you will be greeted with an introduction and the command prompt (> ).
-
-2. Enter 8085 microprocessor instructions to execute various operations. For example:
-```bash
-> MOV A, B
-```
-3. Use the help command to view the list of available commands and their descriptions:
+### Linux (Debian/Ubuntu)
 
 ```bash
-> help
+sudo apt update
+sudo apt install libwebkit2gtk-4.1-dev build-essential curl wget file \
+  libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
 ```
-4. Explore the state of the microprocessor using commands like exmin_memory, exmin_port, exmin_memol, exmin_register, and exmin_flag.
 
-5. Clear the console screen with the clear or cls command for a clean interface:
+### Linux (Arch)
+
 ```bash
-> clear
+sudo pacman -S webkit2gtk-4.1 base-devel curl wget file openssl gtk3 \
+  libappindicator-gtk3 librsvg
 ```
-### Note
-1. __As of now, not all instructions are available (available upto logical operators), and updates are constantly being made. Instructions up to arithmetic operations are supported__.
-2. __None of the flags are effected if any such operations are performed.__
-2. Ensure that you provide valid arguments and follow the correct syntax for each instruction. For additional information on specific commands, use the help command followed by the command name. For example:
+
+### macOS
+
+Install Xcode Command Line Tools:
+
 ```bash
-> help MOV
+xcode-select --install
 ```
 
-## Supported Platforms
-The simulator is compatible with Windows, Linux, and macOS.
+### Windows
 
-- Windows: No additional considerations.
-- Linux: Ensure you have the necessary dependencies by running the command mentioned under [Prerequisites.](#prerequisites)
-- macOS: Similar to Linux, ensure the required dependencies are installed.
+Install [Microsoft Visual Studio C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/). When installing, select **Desktop development with C++**.
 
-## Currently Working On:
-1. Flag modification `main`
-1. Branching Group `main`
-2. AI integration
-2. Stack Group
+## Development
+
+### Quick Setup
+
+```bash
+git clone https://github.com/girisakar365/8085-Microprocessor.git
+cd 8085-Microprocessor
+
+# Linux/macOS
+chmod +x Scripts/dev.sh
+./Scripts/dev.sh
+
+# Windows
+.\Scripts\dev.bat
+```
+
+### Manual Setup
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/girisakar365/8085-Microprocessor.git
+   cd 8085-Microprocessor
+   ```
+
+2. **Setup Backend**
+
+   ```bash
+   cd Backend
+   python3 -m venv .venv
+   source .venv/bin/activate    # Windows: .venv\Scripts\activate
+   pip install -r requirements.txt
+   cd ..
+   ```
+
+3. **Setup Frontend**
+
+   ```bash
+   npm ci
+   ```
+
+## Running
+
+```bash
+python -m Server
+npm run tauri dev
+```
+
+For web-only development (without Tauri):
+
+```bash
+npm run dev
+```
+
+### Build
+
+```bash
+npm run tauri build
+```
+
+## Dev Containers
+
+This repository includes a [Dev Container](https://containers.dev) configuration for Visual Studio Code. This provides a consistent development environment with all dependencies pre-installed.
+
+To use:
+
+1. Install the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+2. Open the repository in VS Code
+3. Click "Reopen in Container" when prompted (or run `Dev Containers: Reopen in Container` from the command palette)
+
+The container will automatically run the setup script on creation.
 
 ## Contributing
-Feel free to contribute to the project by opening issues or submitting pull requests. Your feedback and contributions are highly appreciated. Happy coding!
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this project.
+
+## Code of Conduct
+
+This project has adopted a [Code of Conduct](CODE_OF_CONDUCT.md). Please read it before participating.
+
+## License
+
+This project is licensed under a Non-Commercial License. See [LICENSE.md](LICENSE.md) for details.
+
+Last Updated: November 2025

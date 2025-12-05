@@ -1,0 +1,48 @@
+{
+  "name": "asm-studio",
+  "productName": "asm-studio",
+  "version": "1.0.0",
+  "description": "8085 Microprocessor Simulator",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "echo \"No linting configured\"",
+    "tauri": "tauri"
+  },
+  "keywords": [],
+  "author": {
+    "name": "intropercib & Sakar Giri",
+    "email": "intropercib@gmail.com"
+  },
+  "contributors": [
+    {
+      "name": "intropercib",
+      "email": "intropercib@gmail.com"
+    },
+    {
+      "name": "Sakar Giri",
+      "email": "sakar.giri365@gmail.com"
+    }
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "vite": "^5.4.21"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-opener": "^2",
+    "@vitejs/plugin-react": "^5.1.1",
+    "groq-js": "^1.21.0",
+    "groq-sdk": "^0.37.0",
+    "lucide-react": "^0.554.0",
+    "marked": "^17.0.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "uuid": "^13.0.0",
+    "zustand": "^5.0.8"
+  }
+}

@@ -1,0 +1,15 @@
+START:
+    MVI A,05H
+LOOP:
+    CALL SUB1
+    JZ ZERO
+    JNZ LOOP
+    HLT
+
+ZERO:
+    MVI B,0AH
+    HLT
+
+SUB1:
+    SUI 01H
+    RET
