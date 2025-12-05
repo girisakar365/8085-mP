@@ -3,4 +3,6 @@
 API_KEY.json
 test.py
 tempCodeRunnerFile.py
-*packages
+.venv/
+dist/
+*.log
